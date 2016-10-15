@@ -9,7 +9,7 @@ show_t = 1
 
 #filters
 threshold = 1
-year = 'ALL' #datetime.datetime.now().year
+year = datetime.datetime.now().year #'ALL'
 comp = '>='
 
 options = getopt.getopt(sys.argv[1:], 's:t:y:c:')[0]
