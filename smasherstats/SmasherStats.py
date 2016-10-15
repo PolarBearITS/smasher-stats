@@ -9,11 +9,13 @@ show_t = 1
 
 #filters
 threshold = 1
-year = 'ALL' #datetime.datetime.now().year
+year = datetime.datetime.now().year #'ALL'
 comp = '>='
+game = 'Melee'
 
-options = getopt.getopt(sys.argv[1:], 's:t:y:c:')[0]
-for i in range(4):
+flags = 's:t:y:c:g:'
+options = getopt.getopt(sys.argv[1:], flags)[0]
+for i in range(len(flags)//2):
     try:
         o = options[i][0]
         v = options[i][1]
@@ -27,6 +29,8 @@ for i in range(4):
                 year = v
         elif o == '-c' and year.upper() != 'ALL':
             comp = v
+        elif o == '-g':
+            game = v
     except: pass
 
 if smasher == '':
@@ -35,14 +39,17 @@ smasher = '_'.join(i[0].upper() + i[1:] for i in smasher.split(' '))
 
 page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
 soup = bsoup(page.content, "html.parser")
-tables = soup.find_all('table', {'class': 'wikitable'})
+tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
+for h in tables.find_all('h3'):
+    if game in h.contents[0].text:
+        tables = tables.contents[tables.index(h) + 2]
 results = []
 year = str(year)
 if year.upper() == 'ALL':
-    year = tables[0].contents[3].contents[3].text.split(', ')[1]
+    year = tables.contents[3].contents[3].text.split(', ')[1]
 
-for i in range(3, len(tables[0].contents), 2):
-    t = tables[0].contents[i]
+for i in range(3, len(tables.contents), 2):
+    t = tables.contents[i]
     
     t_name = t.contents[1].text
     t_year = int((t.contents[3].text)[-4:])
