@@ -12,6 +12,7 @@ threshold = 1
 year = datetime.datetime.now().year #'ALL'
 comp = '>='
 game = 'Melee'
+print('asdf')
 
 flags = 's:t:y:c:g:'
 options = getopt.getopt(sys.argv[1:], flags)[0]
