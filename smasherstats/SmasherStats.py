@@ -11,6 +11,7 @@ show_t = 1
 threshold = 1
 year = 'ALL' #datetime.datetime.now().year
 comp = '>='
+print('asdf')
 
 options = getopt.getopt(sys.argv[1:], 's:t:y:c:')[0]
 for i in range(4):
