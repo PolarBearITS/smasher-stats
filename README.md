@@ -1,2 +1,2 @@
 # smasher-stats
-Start of a smash statistics project
+Start of a python smash statistics project
