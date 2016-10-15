@@ -8,8 +8,8 @@ smasher = ''
 show_t = 1
 
 #filters
-threshold = 3
-year = datetime.datetime.now().year
+threshold = 1
+year = 'ALL' #datetime.datetime.now().year
 comp = '>='
 
 options = getopt.getopt(sys.argv[1:], 's:t:y:c:')[0]
@@ -45,7 +45,7 @@ for i in range(3, len(tables[0].contents), 2):
     t = tables[0].contents[i]
     
     t_name = t.contents[1].text
-    t_year = int((t.contents[3].text).split(', ')[1])
+    t_year = int((t.contents[3].text)[-4:])
     t_place = str(t.contents[5].text).replace(' ', '')
     
     results += [[t_place, t_name, t_year]]
