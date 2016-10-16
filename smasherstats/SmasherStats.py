@@ -8,7 +8,7 @@ smasher = ''
 show_t = 1
 
 #filters
-threshold = 1
+threshold = 5
 year = datetime.datetime.now().year #'ALL'
 comp = '>='
 game = 'Melee'
