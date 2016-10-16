@@ -12,7 +12,6 @@ threshold = 1
 year = datetime.datetime.now().year #'ALL'
 comp = '>='
 game = 'Melee'
-print('asdf')
 
 flags = 's:t:y:c:g:'
 options = getopt.getopt(sys.argv[1:], flags)[0]
@@ -48,6 +47,16 @@ results = []
 year = str(year)
 if year.upper() == 'ALL':
     year = tables.contents[3].contents[3].text.split(', ')[1]
+games = [
+    ['MELEE', 'SMASH MELEE', 'SMASH BROS MELEE', 'Super Smash Bros. Melee'],
+    ['64', 'SMASH 64', 'SUPER SMASH BROS 64', 'Super Smash Bros.'],
+    ['BRAWL', 'SMASH BROS BRAWL', 'SMASH BRAWL', 'Super Smash Bros. Brawl'],
+    ['SM4SH', 'SMASH 4', 'SMASH WII U', 'SMASH BROS 4', 'SMASH BROS WII U', 'SMASH BROS 4', 'SUPER SMASH BROS 4', 'Super Smash Bros. for Wii U'],
+    ['PM', 'PROJECT MELEE', 'SUPER SMASH BROS PROJECT M', 'SUPER SMASH BROS PM', 'Project M']
+]
+for g in games:
+    if game in g:
+        game = g[-1]
 
 for i in range(3, len(tables.contents), 2):
     t = tables.contents[i]
