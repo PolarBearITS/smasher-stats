@@ -33,9 +33,6 @@ for i in range(len(flags)//2):
             game = v
     except: pass
 
-if smasher == '':
-    smasher = input('Smasher: ')
-smasher = '_'.join(i[0].upper() + i[1:] for i in smasher.split(' '))
 games = [
     ['MELEE', 'SMASH MELEE', 'SMASH BROS MELEE', 'Super Smash Bros. Melee'],
     ['64', 'SMASH 64', 'SUPER SMASH BROS 64', 'Super Smash Bros.'],
@@ -47,8 +44,16 @@ for g in games:
     if game in g:
         game = g[-1]
 
+if smasher == '':
+    smasher = '_'.join(i[0].upper() + i[1:] for i in input('Smasher: ').split(' '))
 page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
 soup = bsoup(page.content, "html.parser")
+while 'There is currently no text in this page.' in soup.text:
+    print('Invalid tag. Try again.')
+    smasher = '_'.join(i[0].upper() + i[1:] for i in input('Smasher: ').split(' '))
+    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+    soup = bsoup(page.content, "html.parser")
+
 tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
 for h in tables.find_all('h3'):
     if game in h.contents[0].text:
