@@ -14,7 +14,7 @@ year = datetime.datetime.now().year #'ALL'
 comp = '>='
 game = 'Melee'
 ifile = 'test_file_io.txt'
-ofile = 'test_file_output.txt'
+ofile = '../test_file_output.txt'
 
 flags = 's:t:y:c:g:i:o:'
 options = getopt.getopt(sys.argv[1:], flags)[0]
@@ -53,17 +53,14 @@ for g in games:
 
 if ifile != '':
     tags = [line.strip('\n') for line in open(ifile, 'r')]
-    print(tags)
 
 if tags == [] and smasher == '':
-    input('Smasher: ')
-    if smasher.lower() not in [t.lower() for t in tags]:
+    smasher = input('Smasher: ')
+    if smasher.lower() not in [tag.lower() for tag in tags]:
         tags += [smasher]
-
-output = []
 for tag in tags:
-    output += ['-'*20]
-    smasher = '_'.join(i[0].upper() + i[1:] for i in tag.split(' '))
+    output = '-'*20 + '\n'
+    smasher = '_'.join([i[0].upper() + i[1:] for i in tag.split(' ')])
     page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
     soup = bsoup(page.content, "html.parser")
     while 'There is currently no text in this page.' in soup.text:
@@ -91,8 +88,8 @@ for tag in tags:
         results += [[t_place, t_name, t_year]]
 
     
-    output += [smasher + '\'s results for year ' + comp + ' ' + year + ':']
-    output += ['Tournament names listed for placings of ' + str(threshold) + ' or below.']
+    output += smasher + '\'s results for year ' + comp + ' ' + year + ':\n'
+    output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
     results = [i for i in results if i[0] != '—' and eval(str(i[2]) + comp + year)]
     s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
     results = sorted(results, key = s)
@@ -112,11 +109,13 @@ for tag in tags:
                             if t_str[0] != '\n':
                                 t_str = '\n' + t_str
                             t_str += '(' + str(results[k][2]) + ')'
-            output += [t_str]
-if ofile == '':
-    for o in output:
-        print(o)
-if ofile != '':
-    with open(ofile, 'w') as f:
-        for o in output:
-            f.write(o + '\n')
+            output += t_str + '\n'
+    if ofile == '':
+        print(output)
+    if ofile != '':
+        with open(ofile, 'a+') as f:
+            if output not in open(ofile).read():
+                f.write(output)
+                print(tag + ' written to ' + ofile.replace('\\', ' ').replace('/', ' ').split()[-1])
+            else:
+                print(tag + ' already in ' + ofile.replace('\\', ' ').replace('/', ' ').split()[-1])
