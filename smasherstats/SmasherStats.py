@@ -13,9 +13,10 @@ threshold = 5
 year = datetime.datetime.now().year #'ALL'
 comp = '>='
 game = 'Melee'
-ifile = '../test_file_io.txt'
+ifile = 'test_file_io.txt'
+ofile = 'test_file_output.txt'
 
-flags = 's:t:y:c:g:i:'
+flags = 's:t:y:c:g:i:o:'
 options = getopt.getopt(sys.argv[1:], flags)[0]
 for i in range(len(flags)//2):
     try:
@@ -35,6 +36,8 @@ for i in range(len(flags)//2):
             game = v
         elif o == '-i':
             ifile = v
+        elif o == '-o':
+            ofile = v
     except: pass
 
 games = [
@@ -56,8 +59,10 @@ if tags == [] and smasher == '':
     input('Smasher: ')
     if smasher.lower() not in [t.lower() for t in tags]:
         tags += [smasher]
+
+output = []
 for tag in tags:
-    print('-'*20)
+    output += ['-'*20]
     smasher = '_'.join(i[0].upper() + i[1:] for i in tag.split(' '))
     page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
     soup = bsoup(page.content, "html.parser")
@@ -85,9 +90,9 @@ for tag in tags:
         
         results += [[t_place, t_name, t_year]]
 
-
-    print(smasher + '\'s results for year ' + comp + ' ' + year + ':')
-    print('Will list tourney names for placings of ' + str(threshold) + ' or below.')
+    
+    output += [smasher + '\'s results for year ' + comp + ' ' + year + ':']
+    output += ['Tournament names listed for placings of ' + str(threshold) + ' or below.']
     results = [i for i in results if i[0] != '—' and eval(str(i[2]) + comp + year)]
     s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
     results = sorted(results, key = s)
@@ -96,15 +101,22 @@ for tag in tags:
         place = results[i][0]
         if results[i - 1][0] != place:
             count = r.count(place)
-            print(place, '-', count)
+            t_str = str(place) + ' - ' + str(count)
             if show_t and s([place]) >= threshold:
                 for k in range(len(results)):
                     if results[k][0] == place:
                         try:
-                            print(results[k][1], end = ' ')
+                           t_str += '\n' + results[k][1] + ' '
                         except: pass
                         if comp != '==':
-                            print('(' + str(results[k][2]) + ')', end = '')
-                        print()
-            print()
-    
+                            if t_str[0] != '\n':
+                                t_str = '\n' + t_str
+                            t_str += '(' + str(results[k][2]) + ')'
+            output += [t_str]
+if ofile == '':
+    for o in output:
+        print(o)
+if ofile != '':
+    with open(ofile, 'w') as f:
+        for o in output:
+            f.write(o + '\n')
