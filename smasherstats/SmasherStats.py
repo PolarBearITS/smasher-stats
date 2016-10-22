@@ -14,7 +14,7 @@ year = datetime.datetime.now().year #'ALL'
 comp = '>='
 game = 'Melee'
 ifile = 'test_file_io.txt'
-ofile = '../test_file_output.txt'
+ofile = 'test_file_output.txt'
 
 flags = 's:t:y:c:g:i:o:'
 options = getopt.getopt(sys.argv[1:], flags)[0]
@@ -48,7 +48,7 @@ games = [
     ['PM', 'PROJECT MELEE', 'SUPER SMASH BROS PROJECT M', 'SUPER SMASH BROS PM', 'Project M']
 ]
 for g in games:
-    if game in g:
+    if game.strip('.').upper() in g:
         game = g[-1]
 
 if ifile != '':
