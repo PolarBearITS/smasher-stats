@@ -1,6 +1,6 @@
 import requests
 import sys
-import getopt
+import argparse
 import datetime
 from bs4 import BeautifulSoup as bsoup
 
@@ -11,34 +11,24 @@ show_t = 1
 #filters
 threshold = 5
 year = datetime.datetime.now().year #'ALL'
-comp = '>='
+comparison = '>='
 game = 'Melee'
-ifile = 'test_file_io.txt'
-ofile = 'test_file_output.txt'
+input_file = ''
+output_file = ''
 
-flags = 's:t:y:c:g:i:o:'
-options = getopt.getopt(sys.argv[1:], flags)[0]
-for i in range(len(flags)//2):
-    try:
-        o = options[i][0]
-        v = options[i][1]
-        if o == '-s':
-            smasher = v
-        elif o == '-t':
-            if v.isnumeric():
-                threshold = int(v)
-        elif o == '-y':
-            if v.isnumeric() or v.upper() == 'ALL':
-                year = v
-        elif o == '-c' and year.upper() != 'ALL':
-            comp = v
-        elif o == '-g':
-            game = v
-        elif o == '-i':
-            ifile = v
-        elif o == '-o':
-            ofile = v
-    except: pass
+parser = argparse.ArgumentParser(description='Get tournament results of specified smasher')
+names = parser.add_mutually_exclusive_group(required=True)
+names.add_argument('-s', '--smasher', help='The tag of the smasher you want results for')
+names.add_argument('-i', '--input_file', help='Path to input file')
+parser.add_argument('-t', '--threshold', help='Tournaments where the smasher placed worse will have their names displayed', type=int)
+parser.add_argument('-y', '--year', help='Specified year used in conjunction with -c', type=int)
+parser.add_argument('-c', '--comparison', help='What comparison to use when comparing the date to -y')
+parser.add_argument('-g', '--game', help='Specified game to get tournament results for')
+parser.add_argument('-o', '--output_file', help='Path to output file')
+args = parser.parse_args()
+for arg in args.__dict__:
+    if args.__dict__[arg] != None:
+        globals()[arg] = args.__dict__[arg]
 
 games = [
     ['MELEE', 'SMASH MELEE', 'SMASH BROS MELEE', 'Super Smash Bros. Melee'],
@@ -51,8 +41,8 @@ for g in games:
     if game.strip('.').upper() in g:
         game = g[-1]
 
-if ifile != '':
-    tags = [line.strip('\n') for line in open(ifile, 'r')]
+if input_file != '':
+    tags = [line.strip('\n') for line in open(input_file, 'r')]
 
 if tags == [] and smasher == '':
     smasher = input('Smasher: ')
@@ -88,9 +78,9 @@ for tag in tags:
         results += [[t_place, t_name, t_year]]
 
     
-    output += smasher + '\'s results for year ' + comp + ' ' + year + ':\n'
+    output += smasher + '\'s results for year ' + comparison + ' ' + year + ':\n'
     output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
-    results = [i for i in results if i[0] != '—' and eval(str(i[2]) + comp + year)]
+    results = [i for i in results if i[0] != '—' and eval(str(i[2]) + comparison + year)]
     s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
     results = sorted(results, key = s)
     for i in range(len(results)):
@@ -105,17 +95,17 @@ for tag in tags:
                         try:
                            t_str += '\n' + results[k][1] + ' '
                         except: pass
-                        if comp != '==':
+                        if comparison != '==':
                             if t_str[0] != '\n':
                                 t_str = '\n' + t_str
                             t_str += '(' + str(results[k][2]) + ')'
             output += t_str + '\n'
-    if ofile == '':
+    if output_file == '':
         print(output)
-    if ofile != '':
-        with open(ofile, 'a+') as f:
-            if output not in open(ofile).read():
+    if output_file != '':
+        with open(output_file, 'a+') as f:
+            if output not in open(output_file).read():
                 f.write(output)
-                print(tag + ' written to ' + ofile.replace('\\', ' ').replace('/', ' ').split()[-1])
+                print(tag + ' written to ' + output_file.replace('\\', ' ').replace('/', ' ').split()[-1])
             else:
-                print(tag + ' already in ' + ofile.replace('\\', ' ').replace('/', ' ').split()[-1])
+                print(tag + ' already in ' + output_file.replace('\\', ' ').replace('/', ' ').split()[-1])
