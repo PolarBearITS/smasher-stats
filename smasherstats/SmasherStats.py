@@ -17,9 +17,9 @@ input_file = ''
 output_file = ''
 
 parser = argparse.ArgumentParser(description='Get tournament results of specified smasher')
-names = parser.add_mutually_exclusive_group(required=True)
-names.add_argument('-s', '--smasher', help='The tag of the smasher you want results for')
-names.add_argument('-i', '--input_file', help='Path to input file')
+name = parser.add_mutually_exclusive_group(required=True)
+name.add_argument('-s', '--smasher', help='The tag of the smasher you want results for')
+name.add_argument('-i', '--input_file', help='Path to input file')
 parser.add_argument('-t', '--threshold', help='Tournaments where the smasher placed worse will have their names displayed', type=int)
 parser.add_argument('-y', '--year', help='Specified year used in conjunction with -c', type=int)
 parser.add_argument('-c', '--comparison', help='What comparison to use when comparing the date to -y')

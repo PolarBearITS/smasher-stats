@@ -8,13 +8,26 @@ SmasherStats is written in python 3.5, so make sure you have that installed befo
 Download python 3.5 here: https://www.python.org/downloads/
 
 ## How to run the program
-'python smasher-stats.py -s "\<smasher tag>" -g "\<game title>" -t \<result threshold> -y \<year> -c \<comparison>'
-    
- - -s: The smasher's tag. There's only a need for quotes if the tag has a space in it.
- - -g: The game you would like results for. Again, quotes needed only if there's a space (You can be pretty flexible with what you enter).
- - -t: The results threhold. If the player places at or below this place, the tournament name will also be displayed.
- - -y: The year filter. Works in conjunction with the next flag to deliver tournaments from specific timeframes.
- - -c: The comparison string. When the program checks when a tournament took place, it will use this string to compare it to \<year>.
+usage: smasherstats.py [-h] (-s SMASHER | -i INPUT_FILE) [-t THRESHOLD]
+                       [-y YEAR] [-c COMPARISON] [-g GAME] [-o OUTPUT_FILE]
+
+Get tournament results of specified smasher
+
+optional arguments:
+  -h, --help            show a help message and exit
+  -s SMASHER, --smasher SMASHER
+                        The tag of the smasher you want results for; NOTE: THIS IS REQUIRED
+  -i INPUT_FILE, --input_file INPUT_FILE
+                        Path to input file
+  -t THRESHOLD, --threshold THRESHOLD
+                        Tournaments where the smasher placed worse will have
+                        their names displayed
+  -y YEAR, --year YEAR  Specified year used in conjunction with -c
+  -c COMPARISON, --comparison COMPARISON
+                        What comparison to use when comparing the date to -y
+  -g GAME, --game GAME  Specified game to get tournament results for
+  -o OUTPUT_FILE, --output_file OUTPUT_FILE
+                        Path to output file
 
 Possible comparison strings:
  - ==
@@ -26,7 +39,6 @@ Possible comparison strings:
 
 If any of the above flags are not provided, their default value will be used:
 
- - Smasher Tag: prompt for user input
  - Game: Melee
  - Threshold: 5th place
  - Year: Current Year
