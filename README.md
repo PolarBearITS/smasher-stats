@@ -16,17 +16,23 @@ Get tournament results of specified smasher
 optional arguments:
 
     -h, --help            show a help message and exit
+    
     -s SMASHER, --smasher SMASHER
                           The tag of the smasher you want results for; NOTE: THIS IS REQUIRED
+                          
     -i INPUT_FILE, --input_file INPUT_FILE
                           Path to input file
+                          
     -t THRESHOLD, --threshold THRESHOLD
                           Tournaments where the smasher placed worse will have
                           their names displayed
     -y YEAR, --year YEAR  Specified year used in conjunction with -c
+    
     -c COMPARISON, --comparison COMPARISON
                           What comparison to use when comparing the date to -y
+                          
     -g GAME, --game GAME  Specified game to get tournament results for
+    
     -o OUTPUT_FILE, --output_file OUTPUT_FILE
                           Path to output file
 
