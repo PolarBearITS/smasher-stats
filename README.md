@@ -8,7 +8,7 @@ SmasherStats is written in python 3.5, so make sure you have that installed befo
 Download python 3.5 here: https://www.python.org/downloads/
 
 ## How to run the program
-usage: smasherstats.py [-h] (-s SMASHER | -i INPUT_FILE) [-t THRESHOLD]
+usage: smasherstats.py [\-h] (-s SMASHER | -i INPUT_FILE) [-t THRESHOLD]
                        [-y YEAR] [-c COMPARISON] [-g GAME] [-o OUTPUT_FILE]
 
 Get tournament results of specified smasher
