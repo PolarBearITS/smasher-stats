@@ -83,7 +83,7 @@ if smasher != '' and smasher.lower() not in map(str.lower, tags):
     tags += [smasher]
 for tag in tags:
     output = '-'*20 + '\n'
-    smasher = '_'.join([i[0].upper() + i[1:] for i in tag.split(' ')])
+    smasher = '_'.join(i[0].upper() + i[1:] for i in tag.split(' '))
     page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
     soup = bsoup(page.content, "html.parser")
     while 'There is currently no text in this page.' in soup.text:
@@ -110,7 +110,7 @@ for tag in tags:
 
         results += [[t_place, t_name, t_year]]
 
-    output += smasher + '\'s results for year ' + comparison + ' ' + str(year) + ':\n'
+    output += tag + '\'s results for year ' + comparison + ' ' + str(year) + ':\n'
     output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
     results = [i for i in results if i[0] != '—' and eval(str(i[2]) + comparison + str(year))]
 
