@@ -94,8 +94,8 @@ for tag in tags:
         soup = bsoup(page.content, "html.parser")
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
-    for h in tables.find_all('h3'):
-        if game in h.contents[0].text:
+    for header in tables.find_all('h3'):
+        if game in header.contents[0].text:
             tables = tables.contents[tables.index(h) + 2]
     results = []
     if str(year).upper() == 'ALL':
