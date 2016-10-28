@@ -32,9 +32,4 @@ Possible comparison strings:
  - <=
  - >=
 
-If any of the above flags are not provided, their default value will be used:
-
- - Game: Melee
- - Threshold: 5th place
- - Year: Current Year
- - Comparison: >=
+The default setting is to return a smasher's Melee results for the current year only.

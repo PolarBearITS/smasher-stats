@@ -25,7 +25,7 @@ smasher = ''
 tags = []
 threshold = 0
 year = datetime.datetime.now().year
-comparison = '>='
+comparison = '=='
 game = 'Melee'
 input_file = ''
 output_file = ''
