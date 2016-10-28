@@ -125,7 +125,9 @@ for tag in tags:
             if show_t and s([place]) >= threshold:
                 for k in range(len(results)):
                     if results[k][0] == place:
-                        t_str = '\n' + t_str + '\n' + results[k][1] + ' '
+                        if t_str[0] != '\n':
+                            t_str = '\n' + t_str
+                        t_str += '\n' + results[k][1] + ' '
                         if comparison != '==':
                             t_str += '(' + str(results[k][2]) + ')'
             output += t_str + '\n'
