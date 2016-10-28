@@ -96,7 +96,7 @@ for tag in tags:
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
     for header in tables.find_all('h3'):
         if game in header.contents[0].text:
-            tables = tables.contents[tables.index(h) + 2]
+            tables = tables.contents[tables.index(header) + 2]
     results = []
     if str(year).upper() == 'ALL':
         year = tables.contents[3].contents[3].text.split(', ')[1]
