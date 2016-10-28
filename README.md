@@ -7,6 +7,8 @@ SmasherStats is written in python 3.5, so make sure you have that installed befo
 
 Download python 3.5 here: https://www.python.org/downloads/
 
+The default setting is to return a smasher's Melee results for the current year only.
+
 ## How to run the program
 
     Usage: smasherstats.py [options]
@@ -32,4 +34,3 @@ Possible comparison strings:
  - <=
  - >=
 
-The default setting is to return a smasher's Melee results for the current year only.
