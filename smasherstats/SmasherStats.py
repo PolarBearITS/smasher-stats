@@ -1,34 +1,40 @@
+"""Usage: smasherstats.py [options]
+
+Get tournament results of specified smasher
+
+Options:
+  -h, --help                show this help message and exit
+  -s, --smasher <tag>       The tag of the smasher you want results for
+  -i, --input_file <path>   Path to input file where tags are stored
+  -t, --threshold <place>   Tournaments where the smasher placed worse will have
+                            their names displayed
+  -y, --year <year>         Specified year used in conjunction with -c
+  -c, --comparison <str>    What comparison string to use when comparing the date to -y
+  -g, --game <game>         Specified game to get tournament results for
+  -o, --output_file <path>  Path to output file
+"""
+
 import requests
 import sys
-import argparse
 import datetime
+from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 
+# globals
 smasher = ''
 tags = []
-show_t = 1
-
-# filters
-threshold = 5
+threshold = 0
 year = datetime.datetime.now().year
 comparison = '>='
 game = 'Melee'
 input_file = ''
 output_file = ''
 
-parser = argparse.ArgumentParser(description='Get tournament results of specified smasher')
-name = parser.add_mutually_exclusive_group()
-name.add_argument('-s', '--smasher', help='The tag of the smasher you want results for')
-name.add_argument('-i', '--input_file', help='Path to input file')
-parser.add_argument('-t', '--threshold', help='Tournaments where the smasher placed worse will have their names displayed', type=int)
-parser.add_argument('-y', '--year', help='Specified year used in conjunction with -c')
-parser.add_argument('-c', '--comparison', help='What comparison to use when comparing the date to -y')
-parser.add_argument('-g', '--game', help='Specified game to get tournament results for')
-parser.add_argument('-o', '--output_file', help='Path to output file')
-args = parser.parse_args()
-for arg in args.__dict__:
-    if args.__dict__[arg] != None:
-        globals()[arg] = args.__dict__[arg]
+args = docopt(__doc__)
+print(args)
+for arg in args:
+    if args[arg] != None:
+        globals()[arg[2:]] = args[arg]
 
 if not(str(year).isnumeric() or year == 'ALL'):
     print('Invalid year < ' + year + ' >. Defaulting to current year.')
@@ -122,7 +128,7 @@ for tag in tags:
         if results[i - 1][0] != place:
             count = r.count(place)
             t_str = str(place) + ' - ' + str(count)
-            if show_t and s([place]) >= threshold:
+            if s([place]) >= threshold > 0:
                 for k in range(len(results)):
                     if results[k][0] == place:
                         if t_str[0] != '\n':
