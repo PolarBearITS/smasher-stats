@@ -11,7 +11,7 @@ The default setting is to return a smasher's Melee results for the current year 
 
 ## How to run the program
 
-    Usage: smasherstats.py [options]
+    Usage: python smasherstats.py [options]
 
     Get tournament results of specified smasher
 
