@@ -33,5 +33,3 @@ Possible comparison strings:
  - >
  - <=
  - >=
-
-testtesttesttest
