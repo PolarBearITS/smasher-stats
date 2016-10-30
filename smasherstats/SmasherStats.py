@@ -1,5 +1,7 @@
 """
-Usage: smasherstats.py [options]
+Usage:
+  smasherstats.py results [options]
+  smasherstats.py -h | --help
 
 Get tournament results of specified smasher
 
@@ -27,7 +29,7 @@ smasher = ''
 tags = []
 threshold = 0
 year = datetime.datetime.now().year
-comparison = '=='
+comparison = '>='
 game = 'Melee'
 input_file = ''
 output_file = ''

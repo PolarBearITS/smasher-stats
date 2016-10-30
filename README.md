@@ -11,7 +11,9 @@ The default setting is to return a smasher's Melee results for the current year 
 
 ## How to run the program
 
-    Usage: python smasherstats.py [options]
+    Usage:
+      smasherstats.py results [options]
+      smasherstats.py -h | --help
 
     Get tournament results of specified smasher
 
@@ -23,7 +25,7 @@ The default setting is to return a smasher's Melee results for the current year 
       -t --threshold <place>   Tournaments where the smasher placed worse will have
                                their names displayed
       -y --year <year>         Specified year used in conjunction with -c
-      -c --comparison <str>    What comparison string to use when comparing the date to -y
+      -c --comparison "<str>"  What comparison string to use when comparing the date to -y
       -g --game <game>         Specified game to get tournament results for
                                [default: Melee]
 Possible comparison strings:
