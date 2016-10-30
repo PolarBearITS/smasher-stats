@@ -11,7 +11,7 @@ Options:
   -t --threshold <place>   Tournaments where the smasher placed worse will have
                            their names displayed
   -y --year <year>         Specified year used in conjunction with -c
-  -c --comparison <str>    What comparison string to use when comparing the date to -y
+  -c --comparison "<str>"    What comparison string to use when comparing the date to -y
   -g --game <game>         Specified game to get tournament results for
                            [default: Melee]
 """
@@ -108,6 +108,7 @@ for tag in tags:
     results = []
     if str(year).upper() == 'ALL':
         year = tables.contents[3].contents[3].text.split(', ')[1]
+        comparison = '>='
 
     for i in range(3, len(tables.contents), 2):
         t = tables.contents[i]
@@ -130,7 +131,7 @@ for tag in tags:
         if results[i - 1][0] != place:
             count = r.count(place)
             t_str = str(place) + ' - ' + str(count)
-            if s([place]) >= threshold > 0:
+            if s([place]) >= int(threshold) > 0:
                 for k in range(len(results)):
                     if results[k][0] == place:
                         if t_str[0] != '\n':
