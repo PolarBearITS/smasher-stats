@@ -16,6 +16,7 @@ Options:
   -c --comparison "<str>"  What comparison string to use when comparing the date to -y
   -g --game <game>         Specified game to get tournament results for
                            [default: Melee]
+  -d --debug               Run in debug mode
 """
 
 import requests
@@ -35,7 +36,8 @@ input_file = ''
 output_file = ''
 
 args = docopt(__doc__)
-print(args)
+if args['--debug']:
+    print(args)
 for arg in args:
     if args[arg] != None:
         globals()[arg[2:]] = args[arg]
@@ -146,9 +148,9 @@ for tag in tags:
         print(output)
     if output_file != '':
         with open(output_file, 'a+') as f:
+            ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
             if output not in open(output_file).read():
                 f.write(output)
-                ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
                 print(tag + ' written to ' + ofile)
             else:
                 print(tag + ' already in ' + ofile)
