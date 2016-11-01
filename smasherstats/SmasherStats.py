@@ -138,11 +138,13 @@ for tag in tags:
             if s([place]) >= int(threshold) > 0:
                 for k in range(len(results)):
                     if results[k][0] == place:
+                        t_name = results[k][1]
+                        t_year = str(results[k][2])
                         if t_str[0] != '\n':
                             t_str = '\n' + t_str
-                        t_str += '\n' + results[k][1] + ' '
-                        if comparison != '==':
-                            t_str += '(' + str(results[k][2]) + ')'
+                        t_str += '\n' + t_name + ' '
+                        if comparison != '==' and t_year not in t_name:
+                            t_str += '(' + t_year + ')'
             output += t_str + '\n'
     if output_file == '':
         print(output)
