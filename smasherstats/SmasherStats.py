@@ -56,10 +56,10 @@ if year == []:
 
 if isinstance(year, list):
     year = year[0]
-if isinstance(smasher, list):
-    smasher = smasher[0]
+##if isinstance(smasher, list):
+##    smasher = smasher[0]
 
-if year == datetime.datetime.now().year and '>' in comparison:
+if year == [datetime.datetime.now().year] and '>' in comparison:
     comparison = '=='
 games = [
     ['MELEE', 'SMASH MELEE',
@@ -98,10 +98,11 @@ for g in games:
 if input_file != '':
     tags = [line.strip('\n') for line in open(input_file, 'r')]
 
-if tags == [] and smasher == '':
-    smasher = input('Smasher: ')
-if smasher != '' and smasher.lower() not in map(str.lower, tags):
-    tags += [smasher]
+if tags == [] and smasher == ['']:
+    smasher = [input('Smasher: ')]
+for tag in smasher:
+    if tag != '' and tag.lower() not in map(str.lower, tags):
+        tags += [tag]
 for tag in tags:
     output = '-'*20 + '\n'
     smasher = '_'.join(i[0].upper() + i[1:] for i in tag.split(' '))
