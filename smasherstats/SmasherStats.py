@@ -1,6 +1,6 @@
 """
 Usage:
-  smasherstats.py results [options]
+  smasherstats.py [-s <tag>]... [-y <year>]... [options]
   smasherstats.py -h | --help
 
 Get tournament results of specified smasher
@@ -26,10 +26,10 @@ from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 
 # globals
-smasher = ''
+smasher = ['']
 tags = []
 threshold = 0
-year = datetime.datetime.now().year
+year = [datetime.datetime.now().year]
 comparison = '>='
 game = 'Melee'
 input_file = ''
@@ -42,14 +42,23 @@ for arg in args:
     if args[arg] != None:
         globals()[arg[2:]] = args[arg]
 
-if not(str(year).isnumeric() or year == 'ALL'):
-    print('Invalid year < ' + year + ' >. Defaulting to current year.')
-    year = datetime.datetime.now().year
-year = str(year).lstrip('0')
-try:
-    year = int(year)
-except:
-    pass
+for y in year:
+    if not(str(y).isnumeric() or y == 'ALL'):
+        print('Invalid year < ' + y + ' >. Defaulting to current year.')
+        y = datetime.datetime.now().year
+    y = str(y).lstrip('0')
+    try:
+        y = int(y)
+    except:
+        pass
+if year == []:
+    year = [datetime.datetime.now().year]
+
+if isinstance(year, list):
+    year = year[0]
+if isinstance(smasher, list):
+    smasher = smasher[0]
+
 if year == datetime.datetime.now().year and '>' in comparison:
     comparison = '=='
 games = [
