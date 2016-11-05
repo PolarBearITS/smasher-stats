@@ -18,14 +18,16 @@ The default setting is to return a smasher's Melee results for the current year 
     Get tournament results of specified smasher
     
     Options:
-      -h --help                Show this help message and exit
-      -s --smasher <tag>       The tag of the smasher you want results for
-      -i --input_file <path>   Path to input file where tags are stored
-      -o --output_file <path>  Path to output file where results are put
-      -t --threshold <place>   Tournaments where the smasher placed worse will have
-                               their names displayed
-      -y --year <year>         Specified year used to filter tournament dates
-                               List 1 specific year or 2 to define a range
-      -g --game <game>         Specified game to get tournament results for
-                               [default: Melee]
-      -d --debug               Run in debug mode
+      -h, --help                Show this help message and exit
+      -s, --smasher <tag>       The tag of the smasher you want results for
+      -i, --input_file <path>   Path to input file where tags are stored
+      -o, --output_file <path>  Path to output file where results are put
+      -t, --threshold <place>   Tournaments where the smasher placed worse will have
+                                their names displayed
+      -y, --year <year>         Specified year used to filter tournament dates
+                                List 1 specific year or 2 to define a range
+      -g, --game <game>         Specified game to get tournament results for
+                                [default: Melee]
+      -e, --event <event>       What event to pull results for
+                                [default: Singles]
+      --debug                   Run in debug mode
