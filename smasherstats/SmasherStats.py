@@ -53,11 +53,6 @@ for y in year:
 if year == []:
     year = [datetime.datetime.now().year]
 
-##if isinstance(year, list):
-##    year = year[0]
-##if isinstance(smasher, list):
-##    smasher = smasher[0]
-
 games = [
     ['MELEE', 'SMASH MELEE',
      'SMASH BROS MELEE',
