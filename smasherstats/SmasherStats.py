@@ -1,19 +1,19 @@
 """
 Usage:
-  smasherstats.py [-s <tag>]... [-y <year>]... [options]
+  smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
   smasherstats.py -h | --help
 
 Get tournament results of specified smasher
 
 Options:
-  -h --help                show this help message and exit
+  -h --help                Show this help message and exit
   -s --smasher <tag>       The tag of the smasher you want results for
   -i --input_file <path>   Path to input file where tags are stored
   -o --output_file <path>  Path to output file where results are put
   -t --threshold <place>   Tournaments where the smasher placed worse will have
                            their names displayed
-  -y --year <year>         Specified year used in conjunction with -c
-  -c --comparison "<str>"  What comparison string to use when comparing the date to -y
+  -y --year <year>         Specified year used to filter tournament dates
+                           List 1 specific year or 2 to define a range
   -g --game <game>         Specified game to get tournament results for
                            [default: Melee]
   -d --debug               Run in debug mode
@@ -26,11 +26,10 @@ from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 
 # globals
-smasher = ['']
+smasher = ''
 tags = []
 threshold = 0
 year = [datetime.datetime.now().year]
-comparison = '>='
 game = 'Melee'
 input_file = ''
 output_file = ''
@@ -54,13 +53,11 @@ for y in year:
 if year == []:
     year = [datetime.datetime.now().year]
 
-if isinstance(year, list):
-    year = year[0]
+##if isinstance(year, list):
+##    year = year[0]
 ##if isinstance(smasher, list):
 ##    smasher = smasher[0]
 
-if year == [datetime.datetime.now().year] and '>' in comparison:
-    comparison = '=='
 games = [
     ['MELEE', 'SMASH MELEE',
      'SMASH BROS MELEE',
@@ -97,8 +94,7 @@ for g in games:
 
 if input_file != '':
     tags = [line.strip('\n') for line in open(input_file, 'r')]
-
-if tags == [] and smasher == ['']:
+if tags == [] and smasher == []:
     smasher = [input('Smasher: ')]
 for tag in smasher:
     if tag != '' and tag.lower() not in map(str.lower, tags):
@@ -120,9 +116,8 @@ for tag in tags:
         if game in header.contents[0].text:
             tables = tables.contents[tables.index(header) + 2]
     results = []
-    if str(year).upper() == 'ALL':
-        year = tables.contents[3].contents[3].text.split(', ')[1]
-        comparison = '>='
+    if str(year[0]).upper() == 'ALL':
+        year = [tables.contents[3].contents[3].text.split(', ')[1], datetime.datetime.now().year]
 
     for i in range(3, len(tables.contents), 2):
         t = tables.contents[i]
@@ -132,10 +127,15 @@ for tag in tags:
         t_place = str(t.contents[5].text).strip(' ')
 
         results += [[t_place, t_name, t_year]]
-
-    output += tag + '\'s results for year ' + comparison + ' ' + str(year) + ':\n'
-    output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
-    results = [i for i in results if i[0] != '—' and eval(str(i[2]) + comparison + str(year))]
+    output += tag + '\'s results for year '
+    if len(year) == 1:
+        output += '= ' + str(year[0])
+    elif len(year) == 2:
+        output += 'in range = <' + year[0] + ', ' + year[1] + '>'
+    output += ':\n'
+    if threshold != 0:
+        output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
+    results = [i for i in results if i[0] != '—' and int(year[0]) <= i[2] <= int(year[-1])]
 
     s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
     results = sorted(results, key=s)
@@ -153,7 +153,7 @@ for tag in tags:
                         if t_str[0] != '\n':
                             t_str = '\n' + t_str
                         t_str += '\n' + t_name + ' '
-                        if comparison != '==' and t_year not in t_name:
+                        if len(year) != 1 and t_year not in t_name:
                             t_str += '(' + t_year + ')'
             output += t_str + '\n'
     if output_file == '':
