@@ -158,7 +158,7 @@ for tag in tags:
     output += ':\n'
     if threshold != 0:
         output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
-    results = [i for i in results if i[0] != '—' and int(year[0]) <= i[2] <= int(year[-1])]
+    results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
 
     s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
     results = sorted(results, key=s)
