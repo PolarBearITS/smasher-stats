@@ -46,7 +46,7 @@ for arg in args:
         globals()[arg[2:]] = args[arg]
 
 for y in year:
-    if not(str(y).isnumeric() or y == 'ALL'):
+    if not str(y).isnumeric() and y.upper() != 'ALL':
         print('Invalid year < ' + y + ' >. Defaulting to current year.')
         y = datetime.datetime.now().year
     y = str(y).lstrip('0')
@@ -154,7 +154,7 @@ for tag in tags:
     if len(year) == 1:
         output += '= ' + str(year[0])
     elif len(year) == 2:
-        output += 'in range = <' + year[0] + ', ' + year[1] + '>'
+        output += 'in range = <' + str(year[0]) + ', ' + str(year[1]) + '>'
     output += ':\n'
     if threshold != 0:
         output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
