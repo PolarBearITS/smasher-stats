@@ -24,7 +24,6 @@ Options:
 """
 
 import requests
-import sys
 import datetime
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
@@ -166,7 +165,7 @@ for tag in tags:
 
     s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
     results = sorted(results, key=s)
-    ranks += [tag, sum(1/(r**2) for r in [s(i) for i in results])]
+    #ranks += [tag, sum(1/(r**2) for r in [s(i) for i in results])]
     for i in range(len(results)):
         r = [i[0] for i in results if i[0] != '—']
         place = results[i][0]
@@ -186,7 +185,7 @@ for tag in tags:
             output += t_str + '\n'
     if output_file == '':
         print(output)
-        print(ranks)
+        #print(ranks)
     else:
         with open(output_file, 'a+') as f:
             ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
