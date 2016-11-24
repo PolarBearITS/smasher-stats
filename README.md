@@ -12,8 +12,8 @@ The default setting is to return a smasher's Melee results for the current year 
 ## How to run the program
 
     Usage:
-      smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
-      smasherstats.py -h | --help
+      python smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
+      python smasherstats.py -h | --help
     
     Get tournament results of specified smasher
     
@@ -31,3 +31,14 @@ The default setting is to return a smasher's Melee results for the current year 
       -e, --event <event>       What event to pull results for
                                 [default: Singles]
       --debug                   Run in debug mode
+
+## Dependencies
+
+* requests
+* docopt
+* beautifulsoup4
+
+You can install all these using pip by just typing `python -m pip install -r requirements.txt`
+
+Pip comes with the latest versions of Python 2 and Python 3.
+If you don't have it installed, you can download it here: https://pip.pypa.io/en/stable/installing/
