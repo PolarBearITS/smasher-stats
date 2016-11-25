@@ -31,7 +31,7 @@ from bs4 import BeautifulSoup as bsoup
 # globals
 smasher = ''
 tags = []
-threshold = 0
+threshold = 1
 year = [datetime.datetime.now().year]
 game = 'Melee'
 event = ''
@@ -155,11 +155,11 @@ for tag in tags:
         results += [[t_place, t_name, t_year]]
     output += tag + '\'s results for year '
     if len(year) == 1:
-        output += '= ' + str(year[0])
+        output += ' ' + str(year[0])
     elif len(year) == 2:
-        output += 'in range = <' + str(year[0]) + ', ' + str(year[1]) + '>'
+        output += 'in range <' + str(year[0]) + ', ' + str(year[1]) + '>'
     output += ':\n'
-    if threshold != 0:
+    if threshold not in [0, 1]:
         output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
     results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
 
