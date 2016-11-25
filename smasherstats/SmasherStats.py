@@ -1,10 +1,10 @@
 """
 Usage:
-  smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
-  smasherstats.py -h | --help
-
+    python smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
+    python smasherstats.py -h | --help
+    
 Get tournament results of specified smasher
-
+    
 Options:
   -h, --help                Show this help message and exit
   -s, --smasher <tag>       The tag of the smasher you want results for
@@ -19,8 +19,6 @@ Options:
   -e, --event <event>       What event to pull results for
                             [default: Singles]
   --debug                   Run in debug mode
-  --rank                    Rank players by results
-                            Player rank = sum of (1/place)^2
 """
 
 import requests
