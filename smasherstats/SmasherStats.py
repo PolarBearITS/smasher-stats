@@ -1,7 +1,8 @@
 """
 Usage:
-    python smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
-    python smasherstats.py -h | --help
+    smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
+    smasherstats.py records
+    smasherstats.py -h | --help
     
 Get tournament results of specified smasher
     
@@ -40,11 +41,12 @@ rank = 0
 ranks = []
 
 args = docopt(__doc__)
+print(args)
 if args['--debug']:
     print(args)
 for arg in args:
-    if args[arg] != None:
-        globals()[arg[2:]] = args[arg]
+    if args[arg] != None and arg.strip('-') not in globals():
+        globals()[arg.strip('-')] = args[arg]
 
 for y in year:
     if not str(y).isnumeric() and y.upper() != 'ALL':
@@ -113,82 +115,87 @@ if not valid:
     print('Invalid event < ' + event + ' >. Defaulting to Singles.')
     event = 'Singles'
 
-if input_file != '':
-    tags = [line.strip('\n') for line in open(input_file, 'r')]
-if tags == [] and smasher == []:
-    smasher = [input('Smasher: ')]
-for tag in smasher:
-    if tag != '' and tag.lower() not in map(str.lower, tags):
-        tags += [tag]
-for tag in tags:
-    output = '-'*20 + '\n'
-    smasher = '_'.join(i[0].upper() + i[1:] for i in tag.split(' '))
-    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
-    soup = bsoup(page.content, "html.parser")
-    while 'There is currently no text in this page.' in soup.text:
-        print('Invalid tag < ' + smasher + ' >. Try again.')
-        tag = input('Smasher: ')
-        smasher = '_'.join(i[0].upper() + i[1:] for i in tag.split(' '))
+if args['results']:
+    if input_file != '':
+        tags = [line.strip('\n') for line in open(input_file, 'r')]
+    if tags == [] and smasher == []:
+        smasher = [input('Smasher: ')]
+    for tag in smasher:
+        if tag != '' and tag.lower() not in map(str.lower, tags):
+            tags += [tag]
+    for tag in tags:
+        output = '-'*20 + '\n'
+        tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
+        smasher = '_'.join(i for i in tag.split(' '))
         page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
         soup = bsoup(page.content, "html.parser")
+        while 'There is currently no text in this page.' in soup.text:
+            print('Invalid tag < ' + smasher + ' >. Try again.')
+            tag = input('Smasher: ')
+            tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
+            smasher = '_'.join(i for i in tag.split(' '))
+            page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+            soup = bsoup(page.content, "html.parser")
 
-    tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
-    for header in tables.find_all('h3'):
-        if game in header.contents[0].text:
-            tables = tables.contents[tables.index(header) + 2]
-    results = []
-    if str(year[0]).upper() == 'ALL':
-        year = [tables.contents[3].contents[3].text.split(', ')[1], datetime.datetime.now().year]
+        tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
+        for header in tables.find_all('h3'):
+            if game in header.contents[0].text:
+                tables = tables.contents[tables.index(header) + 2]
+        results = []
+        if str(year[0]).upper() == 'ALL':
+            year = [tables.contents[3].contents[3].text.split(', ')[1], datetime.datetime.now().year]
 
-    for i in range(3, len(tables.contents), 2):
-        t = tables.contents[i]
+        for i in range(3, len(tables.contents), 2):
+            t = tables.contents[i]
 
-        t_name = t.contents[1].text
-        t_year = int((t.contents[3].text)[-4:])
-        if event == 'Singles':
-            t_place = str(t.contents[5].text).strip(' ')
-        elif event == 'Doubles':
-            t_place = str(t.contents[7].text).strip(' ')
+            t_name = t.contents[1].text
+            t_year = int((t.contents[3].text)[-4:])
+            if event == 'Singles':
+                t_place = str(t.contents[5].text).strip(' ')
+            elif event == 'Doubles':
+                t_place = str(t.contents[7].text).strip(' ')
 
-        results += [[t_place, t_name, t_year]]
-    output += tag + '\'s results for year '
-    if len(year) == 1:
-        output += ' ' + str(year[0])
-    elif len(year) == 2:
-        output += 'in range <' + str(year[0]) + ', ' + str(year[1]) + '>'
-    output += ':\n'
-    if threshold not in [0, 1]:
-        output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
-    results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+            results += [[t_place, t_name, t_year]]
+        output += tag + '\'s results for '
+        if len(year) == 1:
+            output += str(year[0])
+        elif len(year) == 2:
+            output += ' <' + str(year[0]) + ', ' + str(year[1]) + '>'
+        output += ':\n'
+        if threshold not in [0, 1]:
+            output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
+        results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
 
-    s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
-    results = sorted(results, key=s)
-    #ranks += [tag, sum(1/(r**2) for r in [s(i) for i in results])]
-    for i in range(len(results)):
-        r = [i[0] for i in results if i[0] != '—']
-        place = results[i][0]
-        if results[i - 1][0] != place:
-            count = r.count(place)
-            t_str = str(place) + ' - ' + str(count)
-            if s([place]) >= int(threshold) > 0:
-                for k in range(len(results)):
-                    if results[k][0] == place:
-                        t_name = results[k][1]
-                        t_year = str(results[k][2])
-                        if t_str[0] != '\n':
-                            t_str = '\n' + t_str
-                        t_str += '\n' + t_name + ' '
-                        if len(year) != 1 and t_year not in t_name:
-                            t_str += '(' + t_year + ')'
-            output += t_str + '\n'
-    if output_file == '':
-        print(output)
-        #print(ranks)
-    else:
-        with open(output_file, 'a+') as f:
-            ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
-            if output not in open(output_file).read():
-                f.write(output)
-                print(tag + ' written to ' + ofile)
-            else:
-                print(tag + ' already in ' + ofile)
+        s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
+        results = sorted(results, key=s)
+        #ranks += [tag, sum(1/(r**2) for r in [s(i) for i in results])]
+        for i in range(len(results)):
+            r = [i[0] for i in results if i[0] != '—']
+            place = results[i][0]
+            if results[i - 1][0] != place:
+                count = r.count(place)
+                t_str = str(place) + ' - ' + str(count)
+                if s([place]) >= int(threshold) > 0:
+                    for k in range(len(results)):
+                        if results[k][0] == place:
+                            t_name = results[k][1]
+                            t_year = str(results[k][2])
+                            if t_str[0] != '\n':
+                                t_str = '\n' + t_str
+                            t_str += '\n' + t_name + ' '
+                            if len(year) != 1 and t_year not in t_name:
+                                t_str += '(' + t_year + ')'
+                output += t_str + '\n'
+        if output_file == '':
+            print(output)
+            #print(ranks)
+        else:
+            with open(output_file, 'a+') as f:
+                ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
+                if output not in open(output_file).read():
+                    f.write(output)
+                    print(tag + ' written to ' + ofile)
+                else:
+                    print(tag + ' already in ' + ofile)
+elif args['records']:
+    print('asdf')
