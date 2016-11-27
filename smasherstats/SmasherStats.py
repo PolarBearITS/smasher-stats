@@ -26,6 +26,7 @@ import requests
 import datetime
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
+import pysmash
 
 # globals
 smasher = ''
@@ -45,7 +46,7 @@ print(args)
 if args['--debug']:
     print(args)
 for arg in args:
-    if args[arg] != None and arg.strip('-') not in globals():
+    if args[arg] != None:
         globals()[arg.strip('-')] = args[arg]
 
 for y in year:
