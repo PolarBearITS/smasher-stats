@@ -1,7 +1,7 @@
 """
 Usage:
     smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
-    smasherstats.py records
+    smasherstats.py records [-s <tag>] [-s <tag>]
     smasherstats.py -h | --help
     
 Get tournament results of specified smasher
@@ -42,7 +42,6 @@ rank = 0
 ranks = []
 
 args = docopt(__doc__)
-print(args)
 if args['--debug']:
     print(args)
 for arg in args:
@@ -116,47 +115,47 @@ if not valid:
     print('Invalid event < ' + event + ' >. Defaulting to Singles.')
     event = 'Singles'
 
-if args['results']:
-    if input_file != '':
-        tags = [line.strip('\n') for line in open(input_file, 'r')]
-    if tags == [] and smasher == []:
-        smasher = [input('Smasher: ')]
-    for tag in smasher:
-        if tag != '' and tag.lower() not in map(str.lower, tags):
-            tags += [tag]
-    for tag in tags:
-        output = '-'*20 + '\n'
+if input_file != '':
+    tags = [line.strip('\n') for line in open(input_file, 'r')]
+if tags == [] and smasher == []:
+    smasher = [input('Smasher: ')]
+for tag in smasher:
+    if tag != '' and tag.lower() not in map(str.lower, tags):
+        tags += [tag]
+results = []
+for tag in tags:
+    output = '-'*20 + '\n'
+    tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
+    smasher = '_'.join(i for i in tag.split(' '))
+    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+    soup = bsoup(page.content, "html.parser")
+    while 'There is currently no text in this page.' in soup.text:
+        print('Invalid tag < ' + smasher + ' >. Try again.')
+        tag = input('Smasher: ')
         tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
         smasher = '_'.join(i for i in tag.split(' '))
         page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
         soup = bsoup(page.content, "html.parser")
-        while 'There is currently no text in this page.' in soup.text:
-            print('Invalid tag < ' + smasher + ' >. Try again.')
-            tag = input('Smasher: ')
-            tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
-            smasher = '_'.join(i for i in tag.split(' '))
-            page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
-            soup = bsoup(page.content, "html.parser")
 
-        tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
-        for header in tables.find_all('h3'):
-            if game in header.contents[0].text:
-                tables = tables.contents[tables.index(header) + 2]
-        results = []
-        if str(year[0]).upper() == 'ALL':
-            year = [tables.contents[3].contents[3].text.split(', ')[1], datetime.datetime.now().year]
+    tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
+    for header in tables.find_all('h3'):
+        if game in header.contents[0].text:
+            tables = tables.contents[tables.index(header) + 2]
+    if str(year[0]).upper() == 'ALL':
+        year = [tables.contents[3].contents[3].text.split(', ')[1], datetime.datetime.now().year]
 
-        for i in range(3, len(tables.contents), 2):
-            t = tables.contents[i]
+    for i in range(3, len(tables.contents), 2):
+        t = tables.contents[i]
 
-            t_name = t.contents[1].text
-            t_year = int((t.contents[3].text)[-4:])
-            if event == 'Singles':
-                t_place = str(t.contents[5].text).strip(' ')
-            elif event == 'Doubles':
-                t_place = str(t.contents[7].text).strip(' ')
+        t_name = t.contents[1].text
+        t_year = int((t.contents[3].text)[-4:])
+        if event == 'Singles':
+            t_place = str(t.contents[5].text).strip(' ')
+        elif event == 'Doubles':
+            t_place = str(t.contents[7].text).strip(' ')
 
-            results += [[t_place, t_name, t_year]]
+        results += [[t_place, t_name, t_year]]
+    if args['results']:
         output += tag + '\'s results for '
         if len(year) == 1:
             output += str(year[0])
@@ -198,5 +197,5 @@ if args['results']:
                     print(tag + ' written to ' + ofile)
                 else:
                     print(tag + ' already in ' + ofile)
-elif args['records']:
-    print('asdf')
+    elif args['records']:
+        print(tags)
