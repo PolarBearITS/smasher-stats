@@ -1,7 +1,7 @@
 """
 Usage:
     smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
-    smasherstats.py records [-s <tag>] [-s <tag>]
+    smasherstats.py records [-s <tag>] [-s <tag>] [-y <year>] [-y <year>] [options]
     smasherstats.py -h | --help
     
 Get tournament results of specified smasher
@@ -27,6 +27,7 @@ import datetime
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 import pysmash
+smash = pysmash.SmashGG()
 
 # globals
 smasher = ''
@@ -155,6 +156,8 @@ for tag in tags:
             t_place = str(t.contents[7].text).strip(' ')
 
         results += [[t_place, t_name, t_year]]
+    results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+
     if args['results']:
         output += tag + '\'s results for '
         if len(year) == 1:
@@ -164,7 +167,6 @@ for tag in tags:
         output += ':\n'
         if threshold not in [0, 1]:
             output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
-        results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
 
         s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
         results = sorted(results, key=s)
@@ -198,4 +200,40 @@ for tag in tags:
                 else:
                     print(tag + ' already in ' + ofile)
     elif args['records']:
-        print(tags)
+        tournaments = [r[1] for r in results]
+        for tournament in tournaments:
+            tournament_name = '-'.join(tournament.replace('.', '').split())
+            try:
+                t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
+                sets = smash.bracket_show_sets(t['bracket_ids'][-1])
+                players = smash.bracket_show_players(t['bracket_ids'][-1])
+                print('PASS -', tournament)
+                p_tag = tags[0]
+                wincount = 0
+                losscount = 0
+                outcome = ''
+                for s in sets:
+                    try:
+                        ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
+                        scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
+                        p_tags = ['', '']
+                        for p in players:
+                            for i in range(len(ids)):
+                                if ids[i] == int(p['entrant_id']):
+                                    p_tags[i] = p['tag']
+                        for i in range(len(p_tags)):
+                            if p_tags[i] == tag:
+                                wincount += scores[i]
+                                losscount += scores[not i]
+                                if scores[i] > scores[not i]:
+                                    outcome = 'WIN'
+                                else:
+                                    outcome = 'LOSS'
+                        if tag in p_tags:
+                            print(s['full_round_text'], '-', p_tags[0], 'vs.', p_tags[1], scores[0], '-', scores[1], outcome)
+                    except:
+                        pass
+                print('Game Count:', wincount, '-', losscount, end = '\n\n')
+                
+            except:
+                pass
