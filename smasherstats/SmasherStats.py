@@ -234,6 +234,6 @@ for tag in tags:
                     except:
                         pass
                 print('Game Count:', wincount, '-', losscount, end = '\n\n')
-                
+                asdf
             except:
                 pass
