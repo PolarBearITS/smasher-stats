@@ -217,6 +217,7 @@ for tag in tags:
                         ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
                         scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
                         p_tags = ['', '']
+                        # Generate tag pair for each set
                         for p in players:
                             for i in range(len(ids)):
                                 if ids[i] == int(p['entrant_id']):
