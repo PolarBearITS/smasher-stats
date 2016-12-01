@@ -125,6 +125,7 @@ for tag in smasher:
         tags += [tag]
 results = []
 for tag in tags:
+    res = []
     output = '-'*20 + '\n'
     tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
     smasher = '_'.join(i for i in tag.split(' '))
@@ -155,8 +156,9 @@ for tag in tags:
         elif event == 'Doubles':
             t_place = str(t.contents[7].text).strip(' ')
 
-        results += [[t_place, t_name, t_year]]
-    results = [i for i in results if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+        res += [[t_place, t_name, t_year]]
+    res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+    results += [res]
 
     if args['results']:
         output += tag + '\'s results for '
@@ -169,19 +171,19 @@ for tag in tags:
             output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
 
         s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
-        results = sorted(results, key=s)
-        #ranks += [tag, sum(1/(r**2) for r in [s(i) for i in results])]
-        for i in range(len(results)):
-            r = [i[0] for i in results if i[0] != '—']
-            place = results[i][0]
-            if results[i - 1][0] != place:
+        res = sorted(res, key=s)
+        #ranks += [tag, sum(1/(r**2) for r in [s(i) for i in res])]
+        for i in range(len(res)):
+            r = [i[0] for i in res if i[0] != '—']
+            place = res[i][0]
+            if res[i - 1][0] != place:
                 count = r.count(place)
                 t_str = str(place) + ' - ' + str(count)
                 if s([place]) >= int(threshold) > 0:
-                    for k in range(len(results)):
-                        if results[k][0] == place:
-                            t_name = results[k][1]
-                            t_year = str(results[k][2])
+                    for k in range(len(res)):
+                        if res[k][0] == place:
+                            t_name = res[k][1]
+                            t_year = str(res[k][2])
                             if t_str[0] != '\n':
                                 t_str = '\n' + t_str
                             t_str += '\n' + t_name + ' '
@@ -199,8 +201,9 @@ for tag in tags:
                     print(tag + ' written to ' + ofile)
                 else:
                     print(tag + ' already in ' + ofile)
-    elif args['records']:
-        tournaments = [r[1] for r in results]
+if args['records']:
+    for res in results:
+        tournaments = [r[1] for r in res]
         for tournament in tournaments:
             tournament_name = '-'.join(tournament.replace('.', '').split())
             try:
