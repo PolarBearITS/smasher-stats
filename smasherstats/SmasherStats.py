@@ -212,7 +212,6 @@ if args['records']:
             sets = smash.bracket_show_sets(t['bracket_ids'][-1])
             players = smash.bracket_show_players(t['bracket_ids'][-1])
             print(tournament, '\n' + '-'*len(tournament))
-            p_tag = tags[0]
             wincount = 0
             losscount = 0
             outcome = ''
