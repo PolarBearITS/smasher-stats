@@ -202,41 +202,46 @@ for tag in tags:
                 else:
                     print(tag + ' already in ' + ofile)
 if args['records']:
-    for res in results:
-        tournaments = [r[1] for r in res]
-        for tournament in tournaments:
-            tournament_name = '-'.join(tournament.replace('.', '').split())
-            try:
-                t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-                sets = smash.bracket_show_sets(t['bracket_ids'][-1])
-                players = smash.bracket_show_players(t['bracket_ids'][-1])
-                print('PASS -', tournament)
-                p_tag = tags[0]
-                wincount = 0
-                losscount = 0
-                outcome = ''
-                for s in sets:
-                    try:
-                        ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
-                        scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
-                        p_tags = ['', '']
-                        # Generate tag pair for each set
-                        for p in players:
-                            for i in range(len(ids)):
-                                if ids[i] == int(p['entrant_id']):
-                                    p_tags[i] = p['tag']
-                        for i in range(len(p_tags)):
-                            if p_tags[i] == tag:
+    tournaments = [r[1] for res in results for r in res]
+    if tournaments != [t for t in tournaments if tournaments.count(t) == 1]:
+        tournaments = list(set([t for t in tournaments if tournaments.count(t) > 1]))
+    for tournament in tournaments:
+        tournament_name = '-'.join(tournament.replace('.', '').split())
+        try:
+            t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
+            sets = smash.bracket_show_sets(t['bracket_ids'][-1])
+            players = smash.bracket_show_players(t['bracket_ids'][-1])
+            print(tournament, '\n' + '-'*len(tournament))
+            p_tag = tags[0]
+            wincount = 0
+            losscount = 0
+            outcome = ''
+            for s in sets:
+                try:
+                    ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
+                    scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
+                    p_tags = ['', '']
+                    # Generate tag pair for each set
+                    for p in players:
+                        for i in range(len(ids)):
+                            if ids[i] == int(p['entrant_id']):
+                                p_tags[i] = p['tag']
+                    #print(all(tag in p_tags for tag in tags))
+                    for i in range(len(p_tags)):
+                        if p_tags[i] == tag:
+                            if len(tags) == 1:
                                 wincount += scores[i]
                                 losscount += scores[not i]
                                 if scores[i] > scores[not i]:
                                     outcome = 'WIN'
                                 else:
                                     outcome = 'LOSS'
-                        if tag in p_tags:
-                            print(s['full_round_text'], '-', p_tags[0], 'vs.', p_tags[1], scores[0], '-', scores[1], outcome)
-                    except:
-                        pass
-                print('Game Count:', wincount, '-', losscount, end = '\n\n')
-            except:
-                pass
+                    if all(tag in p_tags for tag in tags):
+                        print(s['full_round_text'], '-', p_tags[0], 'vs.', p_tags[1], scores[0], '-', scores[1], outcome)
+                except:
+                    pass
+            if len(tags) == 1:
+                print('Game Count:', wincount, '-', losscount)
+            print('\n')
+        except:
+            pass
