@@ -203,8 +203,12 @@ for tag in tags:
                     print(tag + ' already in ' + ofile)
 if args['records']:
     tournaments = [r[1] for res in results for r in res]
-    if tournaments != [t for t in tournaments if tournaments.count(t) == 1]:
-        tournaments = list(set([t for t in tournaments if tournaments.count(t) > 1]))
+    t = []
+    for tournament in tournaments:
+        if tournaments.count(tournament) != 1 and tournament not in t:
+            t += [tournament]
+    tournaments = t
+    print(tournaments)
     for tournament in tournaments:
         tournament_name = '-'.join(tournament.replace('.', '').split())
         try:
