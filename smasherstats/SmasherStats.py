@@ -224,7 +224,7 @@ if args['records']:
             losscount = 0
             outcome = ''
             for s in sets:
-                try:
+                if 'None' not in list(s.values()):
                     ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
                     scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
                     p_tags = ['', '']
@@ -233,20 +233,17 @@ if args['records']:
                         for i in range(len(ids)):
                             if ids[i] == int(p['entrant_id']):
                                 p_tags[i] = p['tag']
-                    #print(all(tag in p_tags for tag in tags))
-                    for i in range(len(p_tags)):
-                        if p_tags[i] == tag:
-                            if len(tags) == 1:
+                    if len(tags) == 1:
+                        for i in range(len(p_tags)):
+                            if p_tags[i] == tag:
                                 wincount += scores[i]
                                 losscount += scores[not i]
                                 if scores[i] > scores[not i]:
                                     outcome = 'WIN'
                                 else:
-                                    outcome = 'LOSS'
+                                    outcome = 'LOSS' 
                     if all(tag in p_tags for tag in tags):
                         print(s['full_round_text'], '-', p_tags[0], 'vs.', p_tags[1], scores[0], '-', scores[1], outcome)
-                except:
-                    pass
             if len(tags) == 1:
                 print('Game Count:', wincount, '-', losscount)
             print('\n')
