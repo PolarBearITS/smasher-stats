@@ -209,8 +209,12 @@ if args['records']:
         tournament_name = '-'.join(tournament.replace('.', '').split())
         try:
             t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-            sets = smash.bracket_show_sets(t['bracket_ids'][-1])
-            players = smash.bracket_show_players(t['bracket_ids'][-1])
+            players = []
+            b = 0
+            while not all(tag in [player['tag'] for player in players] for tag in tags):
+                b -= 1
+                sets = smash.bracket_show_sets(t['bracket_ids'][b])
+                players = smash.bracket_show_players(t['bracket_ids'][b])
             print(tournament, '\n' + '-'*len(tournament))
             wincount = 0
             losscount = 0
