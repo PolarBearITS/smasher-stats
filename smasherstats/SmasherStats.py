@@ -204,8 +204,9 @@ for tag in tags:
 if args['records']:
     tournaments = [r[1] for res in results for r in res]
     t = []
+    m = tournaments.count(max(set(tournaments), key=tournaments.count))
     for tournament in tournaments:
-        if tournaments.count(tournament) == 1 and tournament not in t:
+        if tournaments.count(tournament) == m and tournament not in t:
             t += [tournament]
     tournaments = t
     print(tournaments)
@@ -213,6 +214,7 @@ if args['records']:
         output = ''
         havePlayed = 0
         tournament_name = '-'.join(tournament.replace('.', '').split())
+
         try:
             t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
         except:
@@ -222,9 +224,11 @@ if args['records']:
         while not all(tag in [player['tag'] for player in players] for tag in tags):
             b -= 1
             sets = smash.bracket_show_sets(t['bracket_ids'][b])
+##            print(b)
+##            print(t['bracket_ids'])
             players = smash.bracket_show_players(t['bracket_ids'][b])
+
         output += tournament+ '\n' + '-'*len(tournament) + '\n'
-        
         wincount = 0
         losscount = 0
         outcome = ''
