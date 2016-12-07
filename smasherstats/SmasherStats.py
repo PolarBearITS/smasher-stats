@@ -205,7 +205,7 @@ if args['records']:
     tournaments = [r[1] for res in results for r in res]
     t = []
     for tournament in tournaments:
-        if tournaments.count(tournament) != 1 and tournament not in t:
+        if tournaments.count(tournament) == 1 and tournament not in t:
             t += [tournament]
     tournaments = t
     print(tournaments)
@@ -229,7 +229,7 @@ if args['records']:
         losscount = 0
         outcome = ''
         for s in sets:
-            if 'None' not in list(s.values()):
+            if all(str(n) != 'None' for n in list(s.values())):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
                 scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
                 p_tags = ['', '']
@@ -252,7 +252,7 @@ if args['records']:
                     output += s['full_round_text'] + ' - ' + p_tags[0] + ' vs. ' + p_tags[1] + ' ' + str(scores[0]) + ' - ' + str(scores[1]) + ' ' + outcome + '\n'
                 
         if len(tags) == 1:
-            output += 'Game Count: ' + wincount + ' - ' + losscount
+            output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
         output += '\n'
         if havePlayed:
             print(output)
