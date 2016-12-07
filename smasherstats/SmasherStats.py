@@ -209,7 +209,7 @@ if args['records']:
         if tournaments.count(tournament) == m and tournament not in t:
             t += [tournament]
     tournaments = t
-    print(tournaments)
+    #print(tournaments)
     for tournament in tournaments:
         output = ''
         havePlayed = 0
@@ -224,8 +224,6 @@ if args['records']:
         while not all(tag in [player['tag'] for player in players] for tag in tags):
             b -= 1
             sets = smash.bracket_show_sets(t['bracket_ids'][b])
-##            print(b)
-##            print(t['bracket_ids'])
             players = smash.bracket_show_players(t['bracket_ids'][b])
 
         output += tournament+ '\n' + '-'*len(tournament) + '\n'
