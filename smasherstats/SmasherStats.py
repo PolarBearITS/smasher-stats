@@ -256,10 +256,10 @@ if args['records']:
                 
         if len(tags) == 1:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
-        output += '\n'
+        output += '\n\n'
         if havePlayed:
             if output_file == '':
-                print(output)
+                print(output, end = '')
             else:
                 with open(output_file, 'a+') as f:
                     ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
