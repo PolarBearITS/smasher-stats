@@ -227,9 +227,10 @@ if args['records']:
             players = smash.bracket_show_players(t['bracket_ids'][b])
 
         output += tournament+ '\n' + '-'*len(tournament) + '\n'
+        outcome = ''
+        
         wincount = 0
         losscount = 0
-        outcome = ''
         for s in sets:
             if all(str(n) != 'None' for n in list(s.values())):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
@@ -242,13 +243,13 @@ if args['records']:
                             p_tags[i] = p['tag']
                 if len(tags) == 1:
                     for i in range(len(p_tags)):
-                        if p_tags[i] == tag:
+                        if p_tags[i] == tags[0]:
                             wincount += scores[i]
                             losscount += scores[not i]
                             if scores[i] > scores[not i]:
                                 outcome = 'WIN'
                             else:
-                                outcome = 'LOSS' 
+                                outcome = 'LOSS'
                 if all(tag in p_tags for tag in tags):
                     havePlayed = 1
                     output += s['full_round_text'] + ' - ' + p_tags[0] + ' vs. ' + p_tags[1] + ' ' + str(scores[0]) + ' - ' + str(scores[1]) + ' ' + outcome + '\n'
@@ -257,4 +258,13 @@ if args['records']:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
         output += '\n'
         if havePlayed:
-            print(output)
+            if output_file == '':
+                print(output)
+            else:
+                with open(output_file, 'a+') as f:
+                    ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
+                    if output not in open(output_file).read():
+                        f.write(output)
+                        print(tournament + ' written to ' + ofile)
+                    else:
+                        print(tournament + ' already in ' + ofile)
