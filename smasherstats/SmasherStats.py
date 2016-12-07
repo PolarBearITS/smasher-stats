@@ -210,42 +210,49 @@ if args['records']:
     tournaments = t
     print(tournaments)
     for tournament in tournaments:
+        output = ''
+        havePlayed = 0
         tournament_name = '-'.join(tournament.replace('.', '').split())
         try:
             t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-            players = []
-            b = 0
-            while not all(tag in [player['tag'] for player in players] for tag in tags):
-                b -= 1
-                sets = smash.bracket_show_sets(t['bracket_ids'][b])
-                players = smash.bracket_show_players(t['bracket_ids'][b])
-            print(tournament, '\n' + '-'*len(tournament))
-            wincount = 0
-            losscount = 0
-            outcome = ''
-            for s in sets:
-                if 'None' not in list(s.values()):
-                    ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
-                    scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
-                    p_tags = ['', '']
-                    # Generate tag pair for each set
-                    for p in players:
-                        for i in range(len(ids)):
-                            if ids[i] == int(p['entrant_id']):
-                                p_tags[i] = p['tag']
-                    if len(tags) == 1:
-                        for i in range(len(p_tags)):
-                            if p_tags[i] == tag:
-                                wincount += scores[i]
-                                losscount += scores[not i]
-                                if scores[i] > scores[not i]:
-                                    outcome = 'WIN'
-                                else:
-                                    outcome = 'LOSS' 
-                    if all(tag in p_tags for tag in tags):
-                        print(s['full_round_text'], '-', p_tags[0], 'vs.', p_tags[1], scores[0], '-', scores[1], outcome)
-            if len(tags) == 1:
-                print('Game Count:', wincount, '-', losscount)
-            print('\n')
         except:
-            pass
+            continue
+        players = []
+        b = 0
+        while not all(tag in [player['tag'] for player in players] for tag in tags):
+            b -= 1
+            sets = smash.bracket_show_sets(t['bracket_ids'][b])
+            players = smash.bracket_show_players(t['bracket_ids'][b])
+        output += tournament+ '\n' + '-'*len(tournament) + '\n'
+        
+        wincount = 0
+        losscount = 0
+        outcome = ''
+        for s in sets:
+            if 'None' not in list(s.values()):
+                ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
+                scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
+                p_tags = ['', '']
+                # Generate tag pair for each set
+                for p in players:
+                    for i in range(len(ids)):
+                        if ids[i] == int(p['entrant_id']):
+                            p_tags[i] = p['tag']
+                if len(tags) == 1:
+                    for i in range(len(p_tags)):
+                        if p_tags[i] == tag:
+                            wincount += scores[i]
+                            losscount += scores[not i]
+                            if scores[i] > scores[not i]:
+                                outcome = 'WIN'
+                            else:
+                                outcome = 'LOSS' 
+                if all(tag in p_tags for tag in tags):
+                    havePlayed = 1
+                    output += s['full_round_text'] + ' - ' + p_tags[0] + ' vs. ' + p_tags[1] + ' ' + str(scores[0]) + ' - ' + str(scores[1]) + ' ' + outcome + '\n'
+                
+        if len(tags) == 1:
+            output += 'Game Count: ' + wincount + ' - ' + losscount
+        output += '\n'
+        if havePlayed:
+            print(output)
