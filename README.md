@@ -12,11 +12,12 @@ The default setting is to return a smasher's Melee Singles results for the curre
 ## How to run the program
 
     Usage:
-      python smasherstats.py [-s <tag>]... [-y <year>] [-y <year>] [options]
-      python smasherstats.py -h | --help
-    
+        smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
+        smasherstats.py records [-s <tag>] [-s <tag>] [-y <year>] [-y <year>] [options]
+        smasherstats.py -h | --help
+        
     Get tournament results of specified smasher
-    
+        
     Options:
       -h, --help                Show this help message and exit
       -s, --smasher <tag>       The tag of the smasher you want results for
@@ -37,6 +38,7 @@ The default setting is to return a smasher's Melee Singles results for the curre
 * requests
 * docopt
 * beautifulsoup4
+* pysmash
 
 You can install all these using pip by just typing `python -m pip install -r requirements.txt`
 

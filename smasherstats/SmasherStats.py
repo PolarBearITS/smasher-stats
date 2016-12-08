@@ -123,7 +123,9 @@ if tags == [] and smasher == []:
 for tag in smasher:
     if tag != '' and tag.lower() not in map(str.lower, tags):
         tags += [tag]
+        
 results = []
+s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
 for tag in tags:
     res = []
     output = '-'*20 + '\n'
@@ -150,7 +152,7 @@ for tag in tags:
         t = tables.contents[i]
 
         t_name = t.contents[1].text
-        t_year = int((t.contents[3].text)[-4:])
+        t_year = int((t.contents[3].text).strip(' ')[-4:])
         if event == 'Singles':
             t_place = str(t.contents[5].text).strip(' ')
         elif event == 'Doubles':
@@ -158,6 +160,7 @@ for tag in tags:
 
         res += [[t_place, t_name, t_year]]
     res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+    
     results += [res]
 
     if args['results']:
@@ -170,7 +173,7 @@ for tag in tags:
         if threshold not in [0, 1]:
             output += 'Tournament names listed for placings of ' + str(threshold) + ' or below.\n'
 
-        s = lambda x: int(''.join([k for j in x[0] for k in j if k.isnumeric()]))
+        
         res = sorted(res, key=s)
         #ranks += [tag, sum(1/(r**2) for r in [s(i) for i in res])]
         for i in range(len(res)):
@@ -203,34 +206,44 @@ for tag in tags:
                     print(tag + ' already in ' + ofile)
 if args['records']:
     tournaments = [r[1] for res in results for r in res]
+    fail_tournaments = []
     t = []
     m = tournaments.count(max(set(tournaments), key=tournaments.count))
     for tournament in tournaments:
         if tournaments.count(tournament) == m and tournament not in t:
             t += [tournament]
     tournaments = t
-    #print(tournaments)
+##    print(tournaments)
+##    print()
+
+    setcount1 = 0
+    setcount2 = 0
+    gamecount1 = 0
+    gamecount2 = 0
     for tournament in tournaments:
         output = ''
         havePlayed = 0
         tournament_name = '-'.join(tournament.replace('.', '').split())
-
-        try:
-            t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-        except:
-            continue
         players = []
         b = 0
-        while not all(tag in [player['tag'] for player in players] for tag in tags):
-            b -= 1
-            sets = smash.bracket_show_sets(t['bracket_ids'][b])
-            players = smash.bracket_show_players(t['bracket_ids'][b])
+        
+        try:
+            t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
+            while not all(tag in [player['tag'] for player in players] for tag in tags):
+                b -= 1
+                sets = smash.bracket_show_sets(t['bracket_ids'][b])
+                players = smash.bracket_show_players(t['bracket_ids'][b])
+        except:
+            fail_tournaments += [tournament]
+            continue
 
         output += tournament+ '\n' + '-'*len(tournament) + '\n'
         outcome = ''
         
         wincount = 0
         losscount = 0
+
+        
         for s in sets:
             if all(str(n) != 'None' for n in list(s.values())):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
@@ -241,17 +254,26 @@ if args['records']:
                     for i in range(len(ids)):
                         if ids[i] == int(p['entrant_id']):
                             p_tags[i] = p['tag']
-                if len(tags) == 1:
-                    for i in range(len(p_tags)):
-                        if p_tags[i] == tags[0]:
-                            wincount += scores[i]
-                            losscount += scores[not i]
-                            if scores[i] > scores[not i]:
-                                outcome = 'WIN'
-                            else:
-                                outcome = 'LOSS'
                 if all(tag in p_tags for tag in tags):
                     havePlayed = 1
+                    if len(tags) == 1:
+                        for i in range(len(p_tags)):
+                            if p_tags[i] == tags[0]:
+                                wincount += scores[i]
+                                losscount += scores[not i]
+                                if scores[i] > scores[not i]:
+                                    outcome = 'WIN'
+                                else:
+                                    outcome = 'LOSS'
+                    elif len(tags) == 2:
+                        for i in range(len(p_tags)):
+                            if p_tags[i] == tags[0]:
+                                gamecount1 += scores[i]
+                                gamecount2 += scores[not i]
+                                if scores[i] > scores[not i]:
+                                    setcount1 += 1
+                                else:
+                                    setcount2 += 1
                     output += s['full_round_text'] + ' - ' + p_tags[0] + ' vs. ' + p_tags[1] + ' ' + str(scores[0]) + ' - ' + str(scores[1]) + ' ' + outcome + '\n'
                 
         if len(tags) == 1:
@@ -268,3 +290,10 @@ if args['records']:
                         print(tournament + ' written to ' + ofile)
                     else:
                         print(tournament + ' already in ' + ofile)
+    print('Tournaments where specified players were present but failed to be retrieved:')
+    for f in fail_tournaments:
+        print(' -', f)
+    print()
+    if len(tags) == 2:
+            print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
+            print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
