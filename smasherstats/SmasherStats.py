@@ -226,6 +226,8 @@ if args['records']:
             t += [tournament]
     tournaments = t
 
+    print(tournaments)
+
     setcount1 = 0
     setcount2 = 0
     gamecount1 = 0
@@ -239,7 +241,7 @@ if args['records']:
 
         try:
             t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-            while not all(tag in [player['tag'] for player in players] for tag in tags):
+            while not all(tag.lower() in [player['tag'].lower() for player in players] for tag in tags):
                 b -= 1
                 sets = smash.bracket_show_sets(t['bracket_ids'][b])
                 players = smash.bracket_show_players(t['bracket_ids'][b])
@@ -263,7 +265,7 @@ if args['records']:
                     for i in range(len(ids)):
                         if ids[i] == int(p['entrant_id']):
                             p_tags[i] = p['tag']
-                if all(tag in p_tags for tag in tags):
+                if all(tag.lower() in [p.lower() for p in p_tags] for tag in tags):
                     havePlayed = 1
                     if len(tags) == 1:
                         for i in range(len(p_tags)):
@@ -302,10 +304,11 @@ if args['records']:
                         print(tournament + ' written to ' + ofile)
                     else:
                         print(tournament + ' already in ' + ofile)
-    print('Tournaments where specified players were present but results failed to be retrieved:')
-    for f in fail_tournaments:
-        print(' -', f)
-    print()
+    if len(fail_tournaments) == 1:
+        print('Tournaments where specified players were present but results failed to be retrieved:')
+        for f in fail_tournaments:
+            print(' -', f)
+        print()
     if len(tags) == 2:
             print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
             print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
