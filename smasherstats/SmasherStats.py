@@ -168,54 +168,52 @@ for tag in tags:
     res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
     results += [res]
 
-if args['results']:
-    for tag in tags:
-        for res in results:
-            output = '-'*20 + '\n'
-            output += tag + '\'s results for '
-            if len(year) == 1:
-                output += str(year[0])
-            elif len(year) == 2:
-                output += ' <' + str(year[0]) + ', ' + str(year[1]) + '>'
-            output += ':'
-            if threshold not in [0, 1]:
-                output += '\nTournament names listed for placings of '
-                output += str(threshold)
-                output += ' or below.\n'
+    if args['results']:
+        output = '-'*20 + '\n'
+        output += tag + '\'s results for '
+        if len(year) == 1:
+            output += str(year[0])
+        elif len(year) == 2:
+            output += ' <' + str(year[0]) + ', ' + str(year[1]) + '>'
+        output += ':'
+        if threshold not in [0, 1]:
+            output += '\nTournament names listed for placings of '
+            output += str(threshold)
+            output += ' or below.\n'
 
-            res = sorted(res, key=lambda x: nums_from_string(x[0]))
+        res = sorted(res, key=lambda x: nums_from_string(x[0]))
 
-            # sorted by place
-            # formatted like so: [[place, name, year], ...]
-            for i in range(len(res)):
-                r = [i[0] for i in res]
-                place = res[i][0]
-                if res[i - 1][0] != place:
-                    output += '\n'
-                    count = r.count(place)
-                    t_str = str(place) + ' - ' + str(count)
-                    if nums_from_string(place) >= int(threshold) > 0:
-                        for k in range(len(res)):
-                            if res[k][0] == place:
-                                t_name = res[k][1]
-                                t_year = str(res[k][2])
-                                if t_str[0] != '\n':
-                                    t_str = '\n' + t_str
-                                t_str += '\n' + t_name + ' '
-                                if len(year) != 1 and t_year not in t_name:
-                                    t_str += '(' + t_year + ')'
-                    output += t_str
-            if output_file == '':
-                print(output)
-            else:
-                with open(output_file, 'a+') as f:
-                    ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
-                    if output not in open(output_file).read():
-                        f.write(output)
-                        print(tag + ' written to ' + ofile)
-                    else:
-                        print(tag + ' already in ' + ofile)
-elif args['records']:
+        # sorted by place
+        # formatted like so: [[place, name, year], ...]
+        for i in range(len(res)):
+            r = [i[0] for i in res]
+            place = res[i][0]
+            if res[i - 1][0] != place:
+                output += '\n'
+                count = r.count(place)
+                t_str = str(place) + ' - ' + str(count)
+                if nums_from_string(place) >= int(threshold) > 0:
+                    for k in range(len(res)):
+                        if res[k][0] == place:
+                            t_name = res[k][1]
+                            t_year = str(res[k][2])
+                            if t_str[0] != '\n':
+                                t_str = '\n' + t_str
+                            t_str += '\n' + t_name + ' '
+                            if len(year) != 1 and t_year not in t_name:
+                                t_str += '(' + t_year + ')'
+                output += t_str
+        if output_file == '':
+            print(output)
+        else:
+            with open(output_file, 'a+') as f:
+                ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
+                if output not in open(output_file).read():
+                    f.write(output)
+                    print(tag + ' written to ' + ofile)
+                else:
+                    print(tag + ' already in ' + ofile)
+if args['records']:
     tournaments = [r[1] for res in results for r in res]
     fail_tournaments = []
     t = []
