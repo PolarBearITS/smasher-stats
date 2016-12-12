@@ -3,9 +3,9 @@ Usage:
     smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
     smasherstats.py records [-s <tag>] [-s <tag>] [-y <year>] [-y <year>] [options]
     smasherstats.py -h | --help
-    
+
 Get tournament results of specified smasher
-    
+
 Options:
   -h, --help                Show this help message and exit
   -s, --smasher <tag>       The tag of the smasher you want results for
@@ -27,7 +27,10 @@ import datetime
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 import pysmash
+
+CURRENT_YEAR = datetime.datetime.now().year
 smash = pysmash.SmashGG()
+
 
 def nums_from_string(string):
     nums = ''
@@ -40,7 +43,7 @@ def nums_from_string(string):
 smasher = ''
 tags = []
 threshold = 1
-year = [datetime.datetime.now().year]
+year = [CURRENT_YEAR]
 game = 'Melee'
 event = ''
 input_file = ''
@@ -57,14 +60,14 @@ for arg in args:
 for y in year:
     if not str(y).isnumeric() and y.upper() != 'ALL':
         print('Invalid year < ' + y + ' >. Defaulting to current year.')
-        y = datetime.datetime.now().year
+        y = CURRENT_YEAR
     y = str(y).lstrip('0')
     try:
         y = int(y)
     except:
         pass
 if year == []:
-    year = [datetime.datetime.now().year]
+    year = [CURRENT_YEAR]
 
 games = [
     ['MELEE',
@@ -128,7 +131,7 @@ if tags == [] and smasher == []:
 for tag in smasher:
     if tag != '' and tag.lower() not in map(str.lower, tags):
         tags += [tag]
-        
+
 results = []
 for tag in tags:
     res = []
@@ -149,7 +152,7 @@ for tag in tags:
         if game in header.contents[0].text:
             tables = tables.contents[tables.index(header) + 2]
     if str(year[0]).upper() == 'ALL':
-        year = [tables.contents[3].contents[3].text.split(', ')[1], datetime.datetime.now().year]
+        year = [tables.contents[3].contents[3].text.split(', ')[1], CURRENT_YEAR]
 
     for i in range(3, len(tables.contents), 2):
         t = tables.contents[i]
@@ -176,11 +179,16 @@ if args['results']:
                 output += ' <' + str(year[0]) + ', ' + str(year[1]) + '>'
             output += ':'
             if threshold not in [0, 1]:
-                output += '\nTournament names listed for placings of ' + str(threshold) + ' or below.\n'
-            
+                output += '\nTournament names listed for placings of '
+                output += str(threshold)
+                output += ' or below.\n'
+
             res = sorted(res, key=lambda x: nums_from_string(x[0]))
+
+            # sorted by place
+            # formatted like so: [[place, name, year], ...]
             for i in range(len(res)):
-                r = [i[0] for i in res if i[0] != '—']
+                r = [i[0] for i in res]
                 place = res[i][0]
                 if res[i - 1][0] != place:
                     output += '\n'
@@ -216,8 +224,6 @@ elif args['records']:
         if tournaments.count(tournament) == m and tournament not in t:
             t += [tournament]
     tournaments = t
-##    print(tournaments)
-##    print()
 
     setcount1 = 0
     setcount2 = 0
@@ -229,7 +235,7 @@ elif args['records']:
         tournament_name = '-'.join(tournament.replace('.', '').split())
         players = []
         b = 0
-        
+
         try:
             t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
             while not all(tag in [player['tag'] for player in players] for tag in tags):
@@ -240,13 +246,12 @@ elif args['records']:
             fail_tournaments += [tournament]
             continue
 
-        output += tournament+ '\n' + '-'*len(tournament) + '\n'
+        output += tournament + '\n' + '-'*len(tournament) + '\n'
         outcome = ''
-        
+
         wincount = 0
         losscount = 0
 
-        
         for s in sets:
             if all(str(n) != 'None' for n in list(s.values())):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
@@ -277,14 +282,17 @@ elif args['records']:
                                     setcount1 += 1
                                 else:
                                     setcount2 += 1
-                    output += s['full_round_text'] + ' - ' + p_tags[0] + ' vs. ' + p_tags[1] + ' ' + str(scores[0]) + ' - ' + str(scores[1]) + ' ' + outcome + '\n'
-                
+                    output += s['full_round_text'] + ' - '
+                    output += p_tags[0] + ' vs. ' + p_tags[1] + ' '
+                    output += str(scores[0]) + ' - ' + str(scores[1]) + ' '
+                    output += outcome + '\n'
+
         if len(tags) == 1:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
         output += '\n\n'
         if havePlayed:
             if output_file == '':
-                print(output, end = '')
+                print(output, end='')
             else:
                 with open(output_file, 'a+') as f:
                     ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
@@ -293,7 +301,7 @@ elif args['records']:
                         print(tournament + ' written to ' + ofile)
                     else:
                         print(tournament + ' already in ' + ofile)
-    print('Tournaments where specified players were present resultss but failed to be retrieved:')
+    print('Tournaments where specified players were present but results failed to be retrieved:')
     for f in fail_tournaments:
         print(' -', f)
     print()
