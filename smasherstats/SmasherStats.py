@@ -168,7 +168,10 @@ for tag in tags:
     res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
     results += [res]
 
-    if args['results']:
+if args['results']:
+    for i in range(len(tags)):
+        tag = tags[i]
+        res = results[i]
         output = '-'*20 + '\n'
         output += tag + '\'s results for '
         if len(year) == 1:
