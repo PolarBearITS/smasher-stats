@@ -46,11 +46,8 @@ Pip comes with the latest versions of Python 2 and Python 3.
 If you don't have it installed, you can download it here: https://pip.pypa.io/en/stable/installing/
 
 ## Examples
-* Results pulling off ssbwiki
+- Results pulling off ssbwiki
 
-
-    > python smasherstats.py results --smasher Mang0 --year 2016 --threshold 3 
-    --------------------
     Mang0's results for 2016:
     Tournament names listed for placings of 3 or below.
     
