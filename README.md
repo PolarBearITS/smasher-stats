@@ -48,7 +48,8 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 ## Examples
 * Results pulling off ssbwiki
 
-    >> python smasherstats.py results --smasher Mang0 --year 2016 --threshold 3 
+
+    > python smasherstats.py results --smasher Mang0 --year 2016 --threshold 3 
     --------------------
     Mang0's results for 2016:
     Tournament names listed for placings of 3 or below.
@@ -69,9 +70,11 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
     13th - 1
     UGC Smash Open
 
+
 * Results pulling off ssbwiki for multiple smashers
 
-    >> python smasherstats.py results --smasher Armada --smasher Mang0 --year 2015 --threshold 0
+
+    > python smasherstats.py results --smasher Armada --smasher Mang0 --year 2015 --threshold 0
     --------------------
     Armada's results for 2015:
     1st - 17
@@ -87,9 +90,11 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
     5th - 3
     17th - 1
 
+
 * Records pulling off smash.gg
 
-    >> python smasherstats.py records --smasher Zain
+
+    > python smasherstats.py records --smasher Zain
     Pound 2016
     ----------
     pools - Zain vs. ASL 2 - 0 WIN
@@ -113,9 +118,11 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
     Losers Round 4 - Zain vs. PewPewU 0 - 3 LOSS
     Game Count: 2 - 7
 
+
 * Records pulling off smash.gg for specific player matchups
 
-    >> python smasherstats.py records --smasher Mang0 --smasher Armada
+
+    > python smasherstats.py records --smasher Mang0 --smasher Armada
     GENESIS 3
     ---------
     Grand Final - Armada vs. Mang0 1 - 3
