@@ -179,7 +179,7 @@ if args['results']:
         elif len(year) == 2:
             output += ' <' + str(year[0]) + ', ' + str(year[1]) + '>'
         output += ':'
-        if threshold not in [0, 1]:
+        if int(threshold) not in [0, 1]:
             output += '\nTournament names listed for placings of '
             output += str(threshold)
             output += ' or below.\n'
@@ -226,7 +226,7 @@ if args['records']:
             t += [tournament]
     tournaments = t
 
-    print(tournaments)
+    # print(tournaments)
 
     setcount1 = 0
     setcount2 = 0
