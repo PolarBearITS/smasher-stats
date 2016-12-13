@@ -47,6 +47,8 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 
 ## Examples
 
+Results pulling off ssbwiki
+
     Mang0's results for 2016:
     Tournament names listed for placings of 3 or below.
     
@@ -67,8 +69,7 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
     UGC Smash Open
 
 
-* Results pulling off ssbwiki for multiple smashers
-
+Results pulling off ssbwiki for multiple smashers
 
     > python smasherstats.py results --smasher Armada --smasher Mang0 --year 2015 --threshold 0
     --------------------
