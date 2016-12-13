@@ -49,6 +49,7 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 
 Results pulling off ssbwiki
 
+    --------------------
     Mang0's results for 2016:
     Tournament names listed for placings of 3 or below.
     
@@ -88,8 +89,7 @@ Results pulling off ssbwiki for multiple smashers
     17th - 1
 
 
-* Records pulling off smash.gg
-
+Records pulling off smash.gg
 
     > python smasherstats.py records --smasher Zain
     Pound 2016
@@ -116,8 +116,7 @@ Results pulling off ssbwiki for multiple smashers
     Game Count: 2 - 7
 
 
-* Records pulling off smash.gg for specific player matchups
-
+Records pulling off smash.gg for specific player matchups
 
     > python smasherstats.py records --smasher Mang0 --smasher Armada
     GENESIS 3
