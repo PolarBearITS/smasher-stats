@@ -266,26 +266,24 @@ if args['records']:
                     for i in range(len(ids)):
                         if ids[i] == int(p['entrant_id']):
                             p_tags[i] = p['tag']
+                if p_tags[0] != tags[0]:
+                    p_tags.reverse()
                 if all(tag.lower() in [p.lower() for p in p_tags] for tag in tags):
                     havePlayed = 1
                     if len(tags) == 1:
-                        for i in range(len(p_tags)):
-                            if p_tags[i] == tags[0]:
-                                wincount += scores[i]
-                                losscount += scores[not i]
-                                if scores[i] > scores[not i]:
-                                    outcome = 'WIN'
-                                else:
-                                    outcome = 'LOSS'
+                        wincount += scores[i]
+                        losscount += scores[not i]
+                        if scores[i] > scores[not i]:
+                            outcome = 'WIN'
+                        else:
+                            outcome = 'LOSS'
                     elif len(tags) == 2:
-                        for i in range(len(p_tags)):
-                            if p_tags[i] == tags[0]:
-                                gamecount1 += scores[i]
-                                gamecount2 += scores[not i]
-                                if scores[i] > scores[not i]:
-                                    setcount1 += 1
-                                else:
-                                    setcount2 += 1
+                        gamecount1 += scores[0]
+                        gamecount2 += scores[1]
+                        if scores[0] > scores[1]:
+                            setcount1 += 1
+                        else:
+                            setcount2 += 1
                     output += s['full_round_text'] + ' - '
                     output += p_tags[0] + ' vs. ' + p_tags[1] + ' '
                     output += str(scores[0]) + ' - ' + str(scores[1]) + ' '
