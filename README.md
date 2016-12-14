@@ -49,8 +49,35 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 
 Results pulling off ssbwiki
 	
-	asdf
+	>> python smasherstats.py results -s Mang0 -t 3
+	--------------------
+	Mang0's results for 2016:
+	Tournament names listed for placings of 3 or below.
+
+	1st - 4
+	2nd - 7
+
+	3rd - 2
+	Clutch City Clash
+	Shine 2016
+
+	4th - 4
+	Smash Summit 2
+	EVO 2016
+	Smash Summit 3
+	DreamHack Winter 2016
+
+	13th - 1
+	UGC Smash Open
 	
-* Results pulling off ssbwiki for multiple smashers
-* Records pulling off smash.gg
-* Records pulling off smash.gg for specific player matchups
+Results pulling off ssbwiki for multiple smashers
+
+	asdf
+
+Records pulling off smash.gg
+
+	asdf
+
+Records pulling off smash.gg for specific player matchups
+
+	asdf
