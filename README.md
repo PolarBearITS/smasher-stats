@@ -47,7 +47,7 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 
 ## Examples
 
-* Results pulling off ssbwiki
+Results pulling off ssbwiki
 	
 	asdf
 	
