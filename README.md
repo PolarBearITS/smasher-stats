@@ -69,7 +69,8 @@ Results pulling off ssbwiki
 
 	13th - 1
 	UGC Smash Open
-	
+&nbsp;
+&nbsp;	
 Results pulling off ssbwiki for multiple smashers
 
 	asdf
