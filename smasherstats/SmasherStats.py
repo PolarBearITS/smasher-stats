@@ -206,7 +206,7 @@ if args['results']:
                             if len(year) != 1 and t_year not in t_name:
                                 t_str += '(' + t_year + ')'
                 output += t_str
-        output += '-'*20
+        output += '\n' + '-'*20
         if output_file == '':
             print(output)
         else:
