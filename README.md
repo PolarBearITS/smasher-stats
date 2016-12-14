@@ -48,6 +48,9 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 ## Examples
 
 * Results pulling off ssbwiki
+	
+	asdf
+	
 * Results pulling off ssbwiki for multiple smashers
 * Records pulling off smash.gg
 * Records pulling off smash.gg for specific player matchups
