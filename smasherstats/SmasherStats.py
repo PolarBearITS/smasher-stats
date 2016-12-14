@@ -137,14 +137,14 @@ for tag in tags:
     res = []
     tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
     smasher = '_'.join(i for i in tag.split(' '))
-    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+    page = requests.get('http://www.ssbwiki.com/index.php?title=' + smasher)
     soup = bsoup(page.content, "html.parser")
     while page.status_code == 404:
         print('Invalid tag < ' + smasher + ' >. Try again.')
         tag = input('Smasher: ')
         tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
         smasher = '_'.join(i for i in tag.split(' '))
-        page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+        page = requests.get('http://www.ssbwiki.com/index.php?title=' + smasher)
         soup = bsoup(page.content, "html.parser")
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
