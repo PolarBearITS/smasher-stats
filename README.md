@@ -69,16 +69,99 @@ Results pulling off ssbwiki
 
 	13th - 1
 	UGC Smash Open
+	--------------------
+	
 &nbsp;
 &nbsp;	
 Results pulling off ssbwiki for multiple smashers
 
-	asdf
-
+	>> python smasherstats.py results -s Armada -s Mang0 -y 2015 -t 0
+	--------------------
+	Armada's results for 2015:
+	1st - 16
+	2nd - 4
+	3rd - 2
+	5th - 1
+	--------------------
+	Mang0's results for 2015:
+	1st - 5
+	2nd - 4
+	3rd - 2
+	4th - 2
+	5th - 3
+	17th - 1
+	--------------------
+	
+&nbsp;
+&nbsp;	
 Records pulling off smash.gg
 
-	asdf
+	>> python smasherstats.py records -s Zain
+	Pound 2016
+	----------
+	pools - Zain vs. ASL 2 - 0 WIN
+	pools - Griffith vs. Zain 0 - 2 WIN
+	pools - MattDotZeb vs. Zain 0 - 2 WIN
+	pools - Zain vs. Crush 0 - 2 LOSS
+	Game Count: 6 - 2
 
+	Super Smash Con 2016
+	--------------------
+	pools - Zain vs. Crush 0 - 2 LOSS
+	pools - Zain vs. ftgg 2 - 0 WIN
+	pools - Zain vs. BMC 2 - 0 WIN
+	pools - The Moon vs. Zain 2 - 0 LOSS
+	Game Count: 4 - 4
+
+	The Big House 6
+	---------------
+	Winners Round 1 - Zain vs. KJH 2 - 1 WIN
+	Winners Round 2 - Zain vs. The Moon 0 - 3 LOSS
+	Losers Round 4 - Zain vs. PewPewU 0 - 3 LOSS
+	Game Count: 2 - 7
+
+&nbsp;
+&nbsp;		
 Records pulling off smash.gg for specific player matchups
 
-	asdf
+	>> python smasherstats.py records -s Mang0 -s Armada
+	GENESIS 3
+	---------
+	Grand Final - Armada vs. Mang0 1 - 3
+	Grand Final - Mang0 vs. Armada 1 - 3
+
+
+	Battle of the Five Gods
+	-----------------------
+	Losers Final - Armada vs. Mang0 2 - 3
+
+
+	Smash Summit 2
+	--------------
+	Losers Semi-Final - Armada vs. Mang0 3 - 0
+
+
+	Get On My Level 2016
+	--------------------
+	Losers Quarter-Final - Armada vs. Mang0 1 - 3
+
+
+	WTFox 2
+	-------
+	Winners Final - Armada vs. Mang0 1 - 3
+	Grand Final - Mang0 vs. Armada 3 - 0
+
+
+	The Big House 6
+	---------------
+	Winners Semi-Final - Armada vs. Mang0 2 - 3
+	Grand Final - Mang0 vs. Armada 1 - 3
+	Grand Final - Armada vs. Mang0 2 - 3
+
+
+	Tournaments where specified players were present but results failed to be retrieved:
+	 - Enthusiast Gaming Live Expo
+	 - EVO 2016
+
+	Set Count: Mang0 7 - 3 Armada
+	Game Count: Mang0 23 - 18 Armada

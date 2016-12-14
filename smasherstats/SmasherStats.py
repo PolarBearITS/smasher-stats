@@ -163,8 +163,8 @@ for tag in tags:
             t_place = str(t.contents[5].text).strip(' ')
         elif event == 'Doubles':
             t_place = str(t.contents[7].text).strip(' ')
-
-        res += [[t_place, t_name, t_year]]
+        if t_name.encode('ascii', 'ignore').decode('ascii') == t_name:
+            res += [[t_place, t_name, t_year]]
     res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
     results += [res]
 
@@ -206,6 +206,7 @@ if args['results']:
                             if len(year) != 1 and t_year not in t_name:
                                 t_str += '(' + t_year + ')'
                 output += t_str
+        output += '-'*20
         if output_file == '':
             print(output)
         else:
@@ -304,7 +305,7 @@ if args['records']:
                         print(tournament + ' written to ' + ofile)
                     else:
                         print(tournament + ' already in ' + ofile)
-    if len(fail_tournaments) == 1:
+    if len(fail_tournaments) > 0:
         print('Tournaments where specified players were present but results failed to be retrieved:')
         for f in fail_tournaments:
             print(' -', f)
