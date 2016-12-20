@@ -24,6 +24,7 @@ Options:
 
 import requests
 import datetime
+from prettytable import PrettyTable
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 import pysmash
@@ -220,6 +221,7 @@ if args['results']:
 if args['records']:
     tournaments = [r[1] for res in results for r in res]
     fail_tournaments = []
+    pretty_tournaments = []
     t = []
     m = tournaments.count(max(set(tournaments), key=tournaments.count))
     for tournament in tournaments:
@@ -257,6 +259,7 @@ if args['records']:
         losscount = 0
 
         for s in sets:
+            pt = []
             if all(str(n) != 'None' for n in list(s.values())):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
                 scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
@@ -288,6 +291,8 @@ if args['records']:
                     output += p_tags[0] + ' vs. ' + p_tags[1] + ' '
                     output += str(scores[0]) + ' - ' + str(scores[1]) + ' '
                     output += outcome + '\n'
+                    pt += [s['full_round_text'], scores[0], scores[1]]
+                    pretty_tournaments.append([tournament, pt])
 
         if len(tags) == 1:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
@@ -311,3 +316,6 @@ if args['records']:
     if len(tags) == 2:
             print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
             print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
+            t_table = PrettyTable()
+            for pt in pretty_tournaments:
+                print(pt)
