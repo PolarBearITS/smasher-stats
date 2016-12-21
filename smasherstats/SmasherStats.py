@@ -139,14 +139,18 @@ for tag in tags:
     res = []
     tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
     smasher = '_'.join(i for i in tag.split(' '))
-    page = requests.get('http://www.ssbwiki.com/' + smasher)
+    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+    if page.status_code == 404:
+        page = requests.get('http://www.ssbwiki.com/' + smasher)
     soup = bsoup(page.content, "html.parser")
     while page.status_code == 404:
         print('Invalid tag < ' + smasher + ' >. Try again.')
         tag = input('Smasher: ')
         tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
         smasher = '_'.join(i for i in tag.split(' '))
-        page = requests.get('http://www.ssbwiki.com/' + smasher)
+        page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+        if page.status_code == 404:
+            page = requests.get('http://www.ssbwiki.com/' + smasher)
         soup = bsoup(page.content, "html.parser")
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
@@ -158,7 +162,6 @@ for tag in tags:
 
     for i in range(3, len(tables.contents), 2):
         t = tables.contents[i]
-
         t_name = t.contents[1].text
         t_year = int((t.contents[3].text).strip(' ')[-4:])
         if event == 'Singles':
@@ -273,6 +276,7 @@ if args['records']:
                             p_tags[i] = p['tag']
                 if p_tags[0] != tags[0]:
                     p_tags.reverse()
+                    scores.reverse()
                 if all(tag.lower() in [p.lower() for p in p_tags] for tag in tags):
                     havePlayed = 1
                     if len(tags) == 1:
@@ -301,7 +305,7 @@ if args['records']:
 
         if len(tags) == 1:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
-        output += '\n\n'
+        output += '\n'
         if havePlayed:
             if output_file == '':
                 if not args['--table']:
@@ -315,7 +319,7 @@ if args['records']:
                     else:
                         print(tournament + ' already in ' + ofile)
     if len(fail_tournaments) > 0:
-        print('Tournaments where specified players were present but results failed to be retrieved:')
+        print('\nTournaments where specified players were present but results failed to be retrieved:')
         for f in fail_tournaments:
             print(' -', f)
         print()
