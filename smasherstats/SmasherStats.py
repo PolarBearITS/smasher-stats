@@ -19,6 +19,7 @@ Options:
                             [default: Melee]
   -e, --event <event>       What event to pull results for
                             [default: Singles]
+  --table                   Output results in a nice table
   --debug                   Run in debug mode
 """
 
@@ -235,8 +236,9 @@ if args['records']:
     setcount2 = 0
     gamecount1 = 0
     gamecount2 = 0
+    winner = ''
     for tournament in tournaments:
-        output = ''
+        output = '\n'
         havePlayed = 0
         tournament_name = '-'.join(tournament.replace('.', '').split())
         players = []
@@ -285,21 +287,25 @@ if args['records']:
                         gamecount2 += scores[1]
                         if scores[0] > scores[1]:
                             setcount1 += 1
+                            winner = tags[0]
                         else:
                             setcount2 += 1
+                            winner = tags[1]
                     output += s['full_round_text'] + ' - '
                     output += p_tags[0] + ' vs. ' + p_tags[1] + ' '
                     output += str(scores[0]) + ' - ' + str(scores[1]) + ' '
                     output += outcome + '\n'
-                    pt += [s['full_round_text'], scores[0], scores[1]]
-                    pretty_tournaments.append([tournament, pt])
+                    if args['--table']:
+                        pt += [s['full_round_text'], scores[0], scores[1], winner]
+                        pretty_tournaments.append([tournament, pt])
 
         if len(tags) == 1:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
         output += '\n\n'
         if havePlayed:
             if output_file == '':
-                print(output, end='')
+                if not args['--table']:
+                    print(output, end='')
             else:
                 with open(output_file, 'a+') as f:
                     ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
@@ -314,8 +320,19 @@ if args['records']:
             print(' -', f)
         print()
     if len(tags) == 2:
-            print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
-            print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
+        if args['--table']:
             t_table = PrettyTable()
-            for pt in pretty_tournaments:
-                print(pt)
+            t_table.field_names = ["Tournament", "Round", tags[0] + ' - ' + tags[1], "Winner"]
+            for i in range(len(pretty_tournaments)):
+                pt = pretty_tournaments[i]
+                pt_name = pt[0]
+                pt_res = pt[1]
+                if pretty_tournaments[i-1][0] == pt[0]:
+                    pt_name = ''
+                elif i > 0:
+                    t_table.add_row(['', '', '', ''])
+                t_table.add_row([pt_name, pt_res[0], str(pt_res[1]) + ' - ' + str(pt_res[2]), pt_res[3]])
+            print(t_table)
+            print()
+        print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
+        print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
