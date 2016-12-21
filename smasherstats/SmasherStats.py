@@ -240,6 +240,7 @@ if args['records']:
     gamecount1 = 0
     gamecount2 = 0
     winner = ''
+    
     for tournament in tournaments:
         output = '\n'
         havePlayed = 0
