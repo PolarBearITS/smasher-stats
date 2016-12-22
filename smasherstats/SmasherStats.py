@@ -2,6 +2,7 @@
 Usage:
     smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
     smasherstats.py records [-s <tag>] [-s <tag>] [-y <year>] [-y <year>] [options]
+    smasherstats.py settable [-s <tag>]... [-y <year>] [-y <year>] [options]
     smasherstats.py -h | --help
 
 Get tournament results of specified smasher
@@ -25,6 +26,7 @@ Options:
 
 import requests
 import datetime
+import prettytable
 from prettytable import PrettyTable
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
@@ -40,6 +42,47 @@ def nums_from_string(string):
         if char.isnumeric():
             nums += char
     return int(nums)
+
+def getResults(tag, year):
+    res = []
+    tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
+    smasher = '_'.join(i for i in tag.split(' '))
+    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+    if page.status_code == 404:
+        page = requests.get('http://www.ssbwiki.com/' + smasher)
+    soup = bsoup(page.content, "html.parser")
+    while page.status_code == 404:
+        print('Invalid tag < ' + smasher + ' >. Try again.')
+        tag = input('Smasher: ')
+        tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
+        smasher = '_'.join(i for i in tag.split(' '))
+        page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+        if page.status_code == 404:
+            page = requests.get('http://www.ssbwiki.com/' + smasher)
+        soup = bsoup(page.content, "html.parser")
+
+    tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
+    for header in tables.find_all('h3'):
+        if game in header.contents[0].text:
+            tables = tables.contents[tables.index(header) + 2]
+    if str(year[0]).upper() == 'ALL':
+        year = [tables.contents[3].contents[3].text.split(', ')[1], CURRENT_YEAR]
+
+    for i in range(3, len(tables.contents), 2):
+        t = tables.contents[i]
+        t_name = t.contents[1].text
+        t_year = int((t.contents[3].text).strip(' ')[-4:])
+        if event == 'Singles':
+            t_place = str(t.contents[5].text).strip(' ')
+        elif event == 'Doubles':
+            t_place = str(t.contents[7].text).strip(' ')
+        if t_name.encode('ascii', 'ignore').decode('ascii') == t_name:
+            res += [[t_place, t_name, t_year]]
+    res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+    return res
+
+def getRecord(smasher1, smasher2):
+    return
 
 # globals
 smasher = ''
@@ -134,44 +177,7 @@ for tag in smasher:
     if tag != '' and tag.lower() not in map(str.lower, tags):
         tags += [tag]
 
-results = []
-for tag in tags:
-    res = []
-    tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
-    smasher = '_'.join(i for i in tag.split(' '))
-    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
-    if page.status_code == 404:
-        page = requests.get('http://www.ssbwiki.com/' + smasher)
-    soup = bsoup(page.content, "html.parser")
-    while page.status_code == 404:
-        print('Invalid tag < ' + smasher + ' >. Try again.')
-        tag = input('Smasher: ')
-        tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
-        smasher = '_'.join(i for i in tag.split(' '))
-        page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
-        if page.status_code == 404:
-            page = requests.get('http://www.ssbwiki.com/' + smasher)
-        soup = bsoup(page.content, "html.parser")
-
-    tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
-    for header in tables.find_all('h3'):
-        if game in header.contents[0].text:
-            tables = tables.contents[tables.index(header) + 2]
-    if str(year[0]).upper() == 'ALL':
-        year = [tables.contents[3].contents[3].text.split(', ')[1], CURRENT_YEAR]
-
-    for i in range(3, len(tables.contents), 2):
-        t = tables.contents[i]
-        t_name = t.contents[1].text
-        t_year = int((t.contents[3].text).strip(' ')[-4:])
-        if event == 'Singles':
-            t_place = str(t.contents[5].text).strip(' ')
-        elif event == 'Doubles':
-            t_place = str(t.contents[7].text).strip(' ')
-        if t_name.encode('ascii', 'ignore').decode('ascii') == t_name:
-            res += [[t_place, t_name, t_year]]
-    res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
-    results += [res]
+results = [getResults(tag, year) for tag in tags]
 
 if args['results']:
     for i in range(len(tags)):
@@ -341,3 +347,13 @@ if args['records']:
             print()
         print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
         print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
+if args['settable']:
+    settable = PrettyTable(hrules=prettytable.ALL)
+    settable.field_names = ['-'] + tags
+    for i in range(len(tags)):
+        for j in range(i+1, len(tags)):
+            print(tags[i], 'vs.', tags[j])
+        row = ['' for _ in range(len(tags))]
+        row[i] = '-'   
+        settable.add_row([tags[i]] + row)
+    print(settable)
