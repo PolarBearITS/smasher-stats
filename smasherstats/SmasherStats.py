@@ -121,17 +121,20 @@ games = [
     ['MELEE',
      'SMASH MELEE',
      'SMASH BROS MELEE',
-     'Super Smash Bros. Melee'],
+     'Super Smash Bros. Melee',
+     ''],
 
     ['64',
      'SMASH 64',
      'SUPER SMASH BROS 64',
-     'Super Smash Bros.'],
+     'Super Smash Bros.',
+     ''],
 
     ['BRAWL',
      'SMASH BROS BRAWL',
      'SMASH BRAWL',
-     'Super Smash Bros. Brawl'],
+     'Super Smash Bros. Brawl',
+     ''],
 
     ['SM4SH',
      'SMASH 4',
@@ -140,17 +143,19 @@ games = [
      'SMASH BROS WII U',
      'SMASH BROS 4',
      'SUPER SMASH BROS 4',
-     'Super Smash Bros. for Wii U'],
+     'Super Smash Bros. for Wii U',
+     ''],
 
     ['PM',
      'PROJECT MELEE',
      'SUPER SMASH BROS PROJECT M',
      'SUPER SMASH BROS PM',
-     'Project M']
+     'Project M',
+     '']
 ]
 for g in games:
     if game.strip('.').upper() in g:
-        game = g[-1]
+        game = g[-2]
         valid = 1
 if not valid:
     print('Invalid game \'{game}\'. Defaulting to Melee.')
@@ -216,7 +221,7 @@ if args['results']:
                                 t_str = '\n' + t_str
                             t_str += '\n' + t_name + ' '
                             if len(year) != 1 and t_year not in t_name:
-                                t_str += '(' + t_year + ')'
+                                t_str += f'({t_year})'
                 output += t_str
         output += '\n' + '-'*20
         if output_file == '':
@@ -249,6 +254,7 @@ if args['records']:
     winner = ''
     
     for tournament in tournaments:
+        print(tournament, end = ' ... ')
         output = '\n'
         havePlayed = 0
         tournament_name = '-'.join(tournament.replace('.', '').split())
@@ -263,6 +269,7 @@ if args['records']:
                 players = smash.bracket_show_players(t['bracket_ids'][b])
         except:
             fail_tournaments += [tournament]
+            print('FAIL')
             continue
 
         output += tournament + '\n' + '-'*len(tournament) + '\n'
@@ -303,14 +310,11 @@ if args['records']:
                         else:
                             setcount2 += 1
                             winner = tags[1]
-                    output += s['full_round_text'] + ' - '
-                    output += p_tags[0] + ' vs. ' + p_tags[1] + ' '
-                    output += str(scores[0]) + ' - ' + str(scores[1]) + ' '
-                    output += outcome + '\n'
+                    output += f"{s['full_round_text']} - {p_tags[0]} vs. {p_tags[1]} {scores[0]} - {scores[1]} {outcome}\n"
                     if args['--table']:
                         pt += [s['full_round_text'], scores[0], scores[1], winner]
                         pretty_tournaments.append([tournament, pt])
-
+        print('DONE')
         if len(tags) == 1:
             output += 'Game Count: ' + str(wincount) + ' - ' + str(losscount)
         output += '\n'
