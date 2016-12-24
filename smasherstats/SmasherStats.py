@@ -45,6 +45,7 @@ def nums_from_string(string):
 
 def getResults(tag, year):
     res = []
+    index = tags.index(tag)
     tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
     smasher = '_'.join(i for i in tag.split(' '))
     page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
@@ -52,7 +53,7 @@ def getResults(tag, year):
         page = requests.get('http://www.ssbwiki.com/' + smasher)
     soup = bsoup(page.content, "html.parser")
     while page.status_code == 404:
-        print('Invalid tag < ' + smasher + ' >. Try again.')
+        print(f'Invalid tag \'{smasher}\'. Try again.')
         tag = input('Smasher: ')
         tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
         smasher = '_'.join(i for i in tag.split(' '))
@@ -60,6 +61,8 @@ def getResults(tag, year):
         if page.status_code == 404:
             page = requests.get('http://www.ssbwiki.com/' + smasher)
         soup = bsoup(page.content, "html.parser")
+
+    tags[index] = tag
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
     for header in tables.find_all('h3'):
