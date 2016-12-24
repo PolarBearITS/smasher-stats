@@ -3,9 +3,9 @@ Start of a python smash statistics project
 
 Welcome to SmasherStats. This is super basic for now.
 
-SmasherStats is written in python 3.5, so make sure you have that installed before running.
+SmasherStats is written in python 3.6, so make sure you have that installed before running.
 
-Download python 3.5 here: https://www.python.org/downloads/
+Download python 3.6 here: https://www.python.org/downloads/
 
 The default setting is to return a smasher's Melee Singles results for the current year only.
 

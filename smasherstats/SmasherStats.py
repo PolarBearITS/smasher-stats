@@ -107,7 +107,7 @@ for arg in args:
 
 for y in year:
     if not str(y).isnumeric() and y.upper() != 'ALL':
-        print('Invalid year < ' + y + ' >. Defaulting to current year.')
+        print('Invalid year \'{y}\'. Defaulting to current year.')
         y = CURRENT_YEAR
     y = str(y).lstrip('0')
     try:
@@ -153,7 +153,7 @@ for g in games:
         game = g[-1]
         valid = 1
 if not valid:
-    print('Invalid game < ' + game + ' >. Defaulting to Melee.')
+    print('Invalid game \'{game}\'. Defaulting to Melee.')
     game = 'Super Smash Bros. Melee'
 
 events = [
@@ -169,7 +169,7 @@ for e in events:
         event = e[-1]
         valid = 1
 if not valid:
-    print('Invalid event < ' + event + ' >. Defaulting to Singles.')
+    print('Invalid event \'{event}\'. Defaulting to Singles.')
     event = 'Singles'
 
 if input_file != '':
@@ -187,16 +187,14 @@ if args['results']:
         tag = tags[i]
         res = results[i]
         output = '-'*20 + '\n'
-        output += tag + '\'s results for '
+        output += f'{tag}\'s results for '
         if len(year) == 1:
             output += str(year[0])
         elif len(year) == 2:
-            output += ' <' + str(year[0]) + ', ' + str(year[1]) + '>'
+            output += f'<{year[0]}, {year[1]}>'
         output += ':'
         if int(threshold) not in [0, 1]:
-            output += '\nTournament names listed for placings of '
-            output += str(threshold)
-            output += ' or below.\n'
+            output += f'\nTournament names listed for placings of {threshold} or below.\n'
 
         res = sorted(res, key=lambda x: nums_from_string(x[0]))
 
@@ -208,7 +206,7 @@ if args['results']:
             if res[i - 1][0] != place:
                 output += '\n'
                 count = r.count(place)
-                t_str = str(place) + ' - ' + str(count)
+                t_str = f'{place} - {count}'
                 if nums_from_string(place) >= int(threshold) > 0:
                     for k in range(len(res)):
                         if res[k][0] == place:
@@ -228,9 +226,9 @@ if args['results']:
                 ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
                 if output not in open(output_file).read():
                     f.write(output)
-                    print(tag + ' written to ' + ofile)
+                    print(f'{tag} written to {ofile}')
                 else:
-                    print(tag + ' already in ' + ofile)
+                    print(f'{tag} already in {ofile}')
 if args['records']:
     tournaments = [r[1] for res in results for r in res]
     fail_tournaments = []
@@ -325,13 +323,13 @@ if args['records']:
                     ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
                     if output not in open(output_file).read():
                         f.write(output)
-                        print(tournament + ' written to ' + ofile)
+                        print(f'{tournament} written to {ofile}')
                     else:
-                        print(tournament + ' already in ' + ofile)
+                        print(f'{tournament} written to {ofile}')
     if len(fail_tournaments) > 0:
         print('\nTournaments where specified players were present but results failed to be retrieved:')
         for f in fail_tournaments:
-            print(' -', f)
+            print(f' - {f}')
         print()
     if len(tags) == 2:
         if args['--table']:
@@ -348,14 +346,14 @@ if args['records']:
                 t_table.add_row([pt_name, pt_res[0], str(pt_res[1]) + ' - ' + str(pt_res[2]), pt_res[3]])
             print(t_table)
             print()
-        print('Set Count: ' + tags[0] + ' ' + str(setcount1) + ' - ' + str(setcount2) + ' ' + tags[1])
-        print('Game Count: ' + tags[0] + ' ' + str(gamecount1) + ' - ' + str(gamecount2) + ' ' + tags[1])
+        print(f'Set Count: {tags[0]} {setcount1} - {setcount2} {tags[1]}')
+        print(f'Set Count: {tags[0]} {gamecount1} - {gamecount2} {tags[1]}')
 if args['settable']:
     settable = PrettyTable(hrules=prettytable.ALL)
     settable.field_names = ['-'] + tags
     for i in range(len(tags)):
         for j in range(i+1, len(tags)):
-            print(tags[i], 'vs.', tags[j])
+            print(f'{tags[0]} vs. {tags[1]}')
         row = ['' for _ in range(len(tags))]
         row[i] = '-'   
         settable.add_row([tags[i]] + row)
