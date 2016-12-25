@@ -69,7 +69,7 @@ def getResults(tag, year):
         if game in header.contents[0].text:
             tables = tables.contents[tables.index(header) + 2]
     if str(year[0]).upper() == 'ALL':
-        year = [tables.contents[3].contents[3].text.split(', ')[1], CURRENT_YEAR]
+        year = [int(tables.contents[3].contents[3].text.split(', ')[1]), CURRENT_YEAR]
 
     for i in range(3, len(tables.contents), 2):
         t = tables.contents[i]
@@ -79,14 +79,13 @@ def getResults(tag, year):
             t_place = str(t.contents[5].text).strip(' ')
         elif event == 'Doubles':
             t_place = str(t.contents[7].text).strip(' ')
-        if t_name.encode('ascii', 'ignore').decode('ascii') == t_name:
-            res += [[t_place, t_name, t_year]]
+        res += [[t_place, t_name, t_year]]
     res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
-    return res
+    return res, year
 
 def getRecord(tags, results):
     print(f'{tags[0]} vs. {tags[1]}')
-    tournaments = [r[1] for res in results for r in res]
+    tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
     t = []
     m = tournaments.count(max(set(tournaments), key=tournaments.count))
     for tournament in tournaments:
@@ -248,12 +247,13 @@ for tag in smasher:
     if tag != '' and tag.lower() not in map(str.lower, tags):
         tags += [tag]
 
-results = [getResults(tag, year) for tag in tags]
+results = [[tag, getResults(tag, year)[0]] for tag in tags]
+year = getResults(tag, year)[1]
 
 if args['results']:
     for i in range(len(tags)):
         tag = tags[i]
-        res = results[i]
+        res = results[i][1]
         output = '-'*20 + '\n'
         output += f'{tag}\'s results for '
         if len(year) == 1:
@@ -263,7 +263,8 @@ if args['results']:
         output += ':'
         if int(threshold) not in [0, 1]:
             output += f'\nTournament names listed for placings of {threshold} or below.\n'
-
+            
+        res = [x for x in res if any(c.isdigit() for c in x[0])]
         res = sorted(res, key=lambda x: nums_from_string(x[0]))
 
         # sorted by place
@@ -282,11 +283,12 @@ if args['results']:
                             t_year = str(res[k][2])
                             if t_str[0] != '\n':
                                 t_str = '\n' + t_str
-                            t_str += '\n' + t_name + ' '
+                            t_str += '\n - ' + t_name + ' '
                             if len(year) != 1 and t_year not in t_name:
                                 t_str += f'({t_year})'
                 output += t_str
-        output += '\n' + '-'*20
+        if i == len(tags) - 1:
+            output += '-'*20 + '\n'
         if output_file == '':
             print(output)
         else:
@@ -299,7 +301,7 @@ if args['results']:
                     print(f'{tag} already in {ofile}')
 if args['records']:
     if len(tags) == 1:
-        tournaments = [r[1] for res in results for r in res]
+        tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
         fail_tournaments = []
         t = []
         m = tournaments.count(max(set(tournaments), key=tournaments.count))
@@ -357,9 +359,9 @@ if args['records']:
                         scores.reverse()
                     if all(tag.lower() in [p.lower() for p in p_tags] for tag in tags):
                         havePlayed = 1
-                        wincount += scores[i]
-                        losscount += scores[not i]
-                        if scores[i] > scores[not i]:
+                        wincount += scores[0]
+                        losscount += scores[1]
+                        if scores[0] > scores[1]:
                             outcome = 'WIN'
                         else:
                             outcome = 'LOSS'
@@ -384,7 +386,7 @@ if args['records']:
             print()
     elif len(tags) == 2:
         record = getRecord(tags, results)
-        print('\nTournaments where specified players were present but results failed to be retrieved:')
+        print('\n\nTournaments where specified players were present but results failed to be retrieved:')
         for f in record[3]:
             print(f' - {f}')
         print(record[0])
@@ -393,6 +395,14 @@ if args['records']:
         print(f'Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
 if args['settable']:
     settable = PrettyTable(hrules=prettytable.ALL)
-    settable.field_names = ['-'] + tags
-    
+    settable.field_names = ['↓ vs. →'] + tags
+    st = [['-' for _ in range(len(tags))] for _ in range(len(tags))]
+    for i in range(len(tags)):
+        for j in range(i+1, len(tags)):
+            record = getRecord([tags[i], tags[j]], results)[1]
+            print('\n')
+            st[i][j] = f'{record[0]} - {record[1]}'
+            st[j][i] = f'{record[1]} - {record[0]}'
+    for i in range(len(st)):
+        settable.add_row([tags[i]] + st[i])
     print(settable)
