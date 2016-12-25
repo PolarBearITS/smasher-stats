@@ -85,6 +85,7 @@ def getResults(tag, year):
     return res
 
 def getRecord(tags, results):
+    print(f'{tags[0]} vs. {tags[1]}')
     tournaments = [r[1] for res in results for r in res]
     t = []
     m = tournaments.count(max(set(tournaments), key=tournaments.count))
@@ -393,10 +394,5 @@ if args['records']:
 if args['settable']:
     settable = PrettyTable(hrules=prettytable.ALL)
     settable.field_names = ['-'] + tags
-    for i in range(len(tags)):
-        for j in range(i+1, len(tags)):
-            print(f'{tags[0]} vs. {tags[1]}')
-        row = ['' for _ in range(len(tags))]
-        row[i] = '-'   
-        settable.add_row([tags[i]] + row)
+    
     print(settable)
