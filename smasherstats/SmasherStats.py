@@ -23,11 +23,12 @@ Options:
   --debug                   Run in debug mode
 """
 
-import requests
 import datetime
 import sys
-import prettytable
-from prettytable import PrettyTable
+import time
+
+import requests
+from prettytable import PrettyTable, ALL
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 import pysmash
@@ -381,6 +382,7 @@ if args['records']:
                             print(f'{tournament} written to {ofile}')
         if len(fail_tournaments) > 0:
             print('\nTournaments where specified players were present but results failed to be retrieved:')
+            time.sleep(3)
             for f in fail_tournaments:
                 print(f' - {f}')
             print()
@@ -391,10 +393,10 @@ if args['records']:
             print(f' - {f}')
         print(record[0])
         print()
-        print(f'Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}')
-        print(f'Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
+        print(f'Total Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}')
+        print(f'Total Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
 if args['settable']:
-    settable = PrettyTable(hrules=prettytable.ALL)
+    settable = PrettyTable(hrules=ALL)
     settable.field_names = ['↓ vs. →'] + tags
     st = [['-' for _ in range(len(tags))] for _ in range(len(tags))]
     for i in range(len(tags)):
