@@ -47,9 +47,10 @@ def nums_from_string(string):
 def getResults(tag, year):
     res = []
     smasher = '_'.join(i for i in tag.split())
-    page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+    request = 'http://www.ssbwiki.com/Smasher:'
+    page = requests.get(request + smasher)
     if page.status_code == 404:
-        page = requests.get('http://www.ssbwiki.com/' + smasher)
+        page = requests.get(request[:-8] + smasher) #hehe
     soup = bsoup(page.content, "html.parser")
     while page.status_code == 404:
         print(f'Invalid tag \'{smasher}\'. Try again.')
@@ -65,6 +66,7 @@ def getResults(tag, year):
     for header in tables.find_all('h3'):
         if game in header.contents[0].text:
             tables = tables.contents[tables.index(header) + 2]
+            break
     if str(year[0]).upper() == 'ALL':
         year = [int(tables.contents[3].contents[3].text.split(', ')[1]), CURRENT_YEAR]
 
@@ -83,12 +85,11 @@ def getResults(tag, year):
 def getRecord(tags, results):
     print(f'{tags[0]} vs. {tags[1]}')
     tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
-    t = []
-    m = tournaments.count(max(set(tournaments), key=tournaments.count))
-    for tournament in tournaments:
-        if tournaments.count(tournament) == m and tournament not in t:
-            t += [tournament]
-    tournaments = t
+    filter_t = []
+    for t in tournaments:
+        if tournaments.count(t) == len(tags) and t not in filter_t:
+            filter_t.append(t)
+    tournaments = filter_t
 
     setcounts = [0, 0]
     gamecounts = [0, 0]
@@ -382,17 +383,19 @@ if args['records']:
                             print(f'{tournament} written to {ofile}')
         if len(fail_tournaments) > 0:
             print('\nTournaments where specified players were present but results failed to be retrieved:')
-            time.sleep(3)
             for f in fail_tournaments:
                 print(f' - {f}')
             print()
+            time.sleep(3)
     elif len(tags) == 2:
         record = getRecord(tags, results)
         print('\n\nTournaments where specified players were present but results failed to be retrieved:')
         for f in record[3]:
             print(f' - {f}')
-        print(record[0])
         print()
+        time.sleep(2)
+        print(record[0], '\n')
+        time.sleep(.5)
         print(f'Total Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}')
         print(f'Total Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
 if args['settable']:
