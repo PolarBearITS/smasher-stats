@@ -45,9 +45,7 @@ def nums_from_string(string):
 
 def getResults(tag, year):
     res = []
-    index = tags.index(tag)
-    tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
-    smasher = '_'.join(i for i in tag.split(' '))
+    smasher = '_'.join(i for i in tag.split())
     page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
     if page.status_code == 404:
         page = requests.get('http://www.ssbwiki.com/' + smasher)
@@ -55,14 +53,12 @@ def getResults(tag, year):
     while page.status_code == 404:
         print(f'Invalid tag \'{smasher}\'. Try again.')
         tag = input('Smasher: ')
-        tag = ' '.join(i[0].upper() + i[1:] for i in tag.split(' '))
-        smasher = '_'.join(i for i in tag.split(' '))
+        tag = ' '.join(i[0].upper() + i[1:] for i in tag.split())
+        smasher = '_'.join(i for i in tag.split())
         page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
         if page.status_code == 404:
             page = requests.get('http://www.ssbwiki.com/' + smasher)
         soup = bsoup(page.content, "html.parser")
-
-    tags[index] = tag
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
     for header in tables.find_all('h3'):
@@ -81,7 +77,7 @@ def getResults(tag, year):
             t_place = str(t.contents[7].text).strip(' ')
         res += [[t_place, t_name, t_year]]
     res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
-    return res, year
+    return [res, year]
 
 def getRecord(tags, results):
     print(f'{tags[0]} vs. {tags[1]}')
@@ -247,8 +243,12 @@ for tag in smasher:
     if tag != '' and tag.lower() not in map(str.lower, tags):
         tags += [tag]
 
-results = [[tag, getResults(tag, year)[0]] for tag in tags]
-year = getResults(tag, year)[1]
+results = []
+tags = [' '.join(i[0].upper() + i[1:] for i in tag.split()) for tag in tags]
+for tag in tags:
+    r = getResults(tag, year)
+    results.append([tag, r[0]])
+    year = r[1]
 
 if args['results']:
     for i in range(len(tags)):
@@ -263,7 +263,7 @@ if args['results']:
         output += ':'
         if int(threshold) not in [0, 1]:
             output += f'\nTournament names listed for placings of {threshold} or below.\n'
-            
+
         res = [x for x in res if any(c.isdigit() for c in x[0])]
         res = sorted(res, key=lambda x: nums_from_string(x[0]))
 
