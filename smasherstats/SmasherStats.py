@@ -57,9 +57,9 @@ def getResults(tag, year):
         tag = input('Smasher: ')
         tag = ' '.join(i[0].upper() + i[1:] for i in tag.split())
         smasher = '_'.join(i for i in tag.split())
-        page = requests.get('http://www.ssbwiki.com/Smasher:' + smasher)
+        page = requests.get(request + smasher)
         if page.status_code == 404:
-            page = requests.get('http://www.ssbwiki.com/' + smasher)
+            page = requests.get(request[:-8] + smasher) #hehe
         soup = bsoup(page.content, "html.parser")
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
