@@ -25,7 +25,6 @@ Options:
 
 import datetime
 import sys
-import time
 
 import requests
 from prettytable import PrettyTable, ALL
@@ -83,7 +82,8 @@ def getResults(tag, year):
     return [res, year]
 
 def getRecord(tags, results):
-    print(f'{tags[0]} vs. {tags[1]}')
+    if len(tags) == 2:
+        print(f'{tags[0]} vs. {tags[1]}')
     tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
     filter_t = []
     for t in tournaments:
@@ -96,8 +96,10 @@ def getRecord(tags, results):
 
     fail_tournaments = []
     pt = PrettyTable()
-    pt.field_names = ['Tournament', 'Round', f'{tags[0]} - {tags[1]}', 'Winner']
-    pretty_tournaments = []
+    if len(tags) == 1:
+        pt.field_names = ['Tournament', 'Round', f'{tags[0]} vs. ↓', 'Score', 'Outcome']
+    elif len(tags) == 2:
+        pt.field_names = ['Tournament', 'Round', f'{tags[0]} - {tags[1]}', 'Winner']
     pt_rows = []
     for tournament in tournaments:
         sys.stdout.write('\r')
@@ -115,8 +117,7 @@ def getRecord(tags, results):
         except:
             fail_tournaments.append(tournament)
             continue
-
-        player_ids = ['', '']
+        player_ids = ['' for _ in range(len(tags))]
         for p in players:
             if p['tag'] in tags:
                 player_ids[tags.index(p['tag'])] = p['entrant_id']
@@ -125,18 +126,31 @@ def getRecord(tags, results):
             if all(str(n) != 'None' for n in s.values()):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
                 scores = [s['entrant_1_score'], s['entrant_2_score']]
-                if all(i in player_ids for i in ids):
+                if all(i in ids for i in player_ids):
                     havePlayed = 1
-                    if ids != player_ids:
+                    p_tag = ''
+                    if len(tags) == 1:
+                        p_id = ids[not ids.index(player_ids[0])]
+                        #print(ids, player_ids)
+                        
+                        for p in players:
+                            if p['entrant_id'] == p_id:
+                                p_tag = p['tag']
+                    if ids[0] != player_ids[0]:
                         ids.reverse()
                         scores.reverse()
+                    if scores[0] > scores[1]:
+                        outcome = 'WIN'
+                    else:
+                        outcome = 'LOSS'
                     for i in range(len(gamecounts)):
                         gamecounts[i] += scores[i]
                     setcounts[scores.index(max(scores))] += 1
-                    res = [tournament, s['full_round_text'], f'{scores[0]} - {scores[1]}', tags[player_ids.index(int(s['winner_id']))]]
+                    if len(tags) == 1:
+                        res = [tournament, s['full_round_text'], p_tag, f'{scores[0]} - {scores[1]}', outcome]
+                    elif len(tags) == 2:
+                        res = [tournament, s['full_round_text'], f'{scores[0]} - {scores[1]}', tags[player_ids.index(int(s['winner_id']))]]
                     pt_rows.append(res)
-                    if tournament not in pretty_tournaments:
-                        pretty_tournaments.append(tournament)
     for i in range(len(pt_rows)):
         row = pt_rows[i]
         r_name = row[0]
@@ -302,100 +316,13 @@ if args['results']:
                 else:
                     print(f'{tag} already in {ofile}')
 if args['records']:
-    if len(tags) == 1:
-        tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
-        fail_tournaments = []
-        t = []
-        m = tournaments.count(max(set(tournaments), key=tournaments.count))
-        for tournament in tournaments:
-            if tournaments.count(tournament) == m and tournament not in t:
-                t += [tournament]
-        tournaments = t
-
-        # print(tournaments)
-
-        setcount1 = 0
-        setcount2 = 0
-        gamecount1 = 0
-        gamecount2 = 0
-        winner = ''
-        
-        for tournament in tournaments:
-            print(tournament, end = ' ... ')
-            output = '\n'
-            havePlayed = 0
-            tournament_name = '-'.join(tournament.replace('.', '').split())
-            players = []
-            b = 0
-
-            try:
-                t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-                while not all(tag.lower() in [player['tag'].lower() for player in players] for tag in tags):
-                    b -= 1
-                    sets = smash.bracket_show_sets(t['bracket_ids'][b])
-                    players = smash.bracket_show_players(t['bracket_ids'][b])
-            except:
-                fail_tournaments += [tournament]
-                print('FAIL')
-                continue
-
-            output += tournament + '\n' + '-'*len(tournament) + '\n'
-            outcome = ''
-
-            wincount = 0
-            losscount = 0
-
-            for s in sets:
-                pt = []
-                if all(str(n) != 'None' for n in list(s.values())):
-                    ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
-                    scores = [int(s['entrant_1_score']), int(s['entrant_2_score'])]
-                    p_tags = ['', '']
-                    # Generate tag pair for each set
-                    for p in players:
-                        for i in range(len(ids)):
-                            if ids[i] == int(p['entrant_id']):
-                                p_tags[i] = p['tag']
-                    if p_tags[0] != tags[0]:
-                        p_tags.reverse()
-                        scores.reverse()
-                    if all(tag.lower() in [p.lower() for p in p_tags] for tag in tags):
-                        havePlayed = 1
-                        wincount += scores[0]
-                        losscount += scores[1]
-                        if scores[0] > scores[1]:
-                            outcome = 'WIN'
-                        else:
-                            outcome = 'LOSS'
-                        output += f"{s['full_round_text']} - {p_tags[0]} vs. {p_tags[1]} {scores[0]} - {scores[1]} {outcome}\n"
-            print('DONE')
-            output += f'Game Count: {wincount} - {losscount}\n'
-            if havePlayed:
-                if output_file == '':
-                    print(output, end='')
-                else:
-                    with open(output_file, 'a+') as f:
-                        ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
-                        if output not in open(output_file).read():
-                            f.write(output)
-                            print(f'{tournament} written to {ofile}')
-                        else:
-                            print(f'{tournament} written to {ofile}')
-        if len(fail_tournaments) > 0:
-            print('\nTournaments where specified players were present but results failed to be retrieved:')
-            for f in fail_tournaments:
-                print(f' - {f}')
-            print()
-            time.sleep(3)
-    elif len(tags) == 2:
-        record = getRecord(tags, results)
-        print('\n\nTournaments where specified players were present but results failed to be retrieved:')
-        for f in record[3]:
-            print(f' - {f}')
-        print()
-        time.sleep(2)
-        print(record[0], '\n')
-        time.sleep(.5)
+    record = getRecord(tags, results)
+    print('\n\nTournaments where specified players were present but results failed to be retrieved:')
+    for f in record[3]:
+        print(f' - {f}')
+    print()
+    print(record[0], '\n')
+    if len(tags) == 2:
         print(f'Total Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}')
         print(f'Total Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
 if args['settable']:
