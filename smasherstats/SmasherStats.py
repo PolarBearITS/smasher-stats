@@ -43,13 +43,14 @@ def nums_from_string(string):
             nums += char
     return int(nums)
 
+
 def getResults(tag, year):
     res = []
     smasher = '_'.join(i for i in tag.split())
     request = 'http://www.ssbwiki.com/Smasher:'
     page = requests.get(request + smasher)
     if page.status_code == 404:
-        page = requests.get(request[:-8] + smasher) #hehe
+        page = requests.get(request[:-8] + smasher)  # hehe
     soup = bsoup(page.content, "html.parser")
     while page.status_code == 404:
         print(f'Invalid tag \'{smasher}\'. Try again.')
@@ -58,7 +59,7 @@ def getResults(tag, year):
         smasher = '_'.join(i for i in tag.split())
         page = requests.get(request + smasher)
         if page.status_code == 404:
-            page = requests.get(request[:-8] + smasher) #hehe
+            page = requests.get(request[:-8] + smasher)  # hehe
         soup = bsoup(page.content, "html.parser")
 
     tables = soup.find_all('div', {'id': 'mw-content-text'})[0].contents[2].contents[1].contents[1]
@@ -78,8 +79,9 @@ def getResults(tag, year):
         elif event == 'Doubles':
             t_place = str(t.contents[7].text).strip(' ')
         res += [[t_place, t_name, t_year]]
-    res = [i for i in res if i[0] not in ['—', ''] and int(year[0]) <= i[2] <= int(year[-1])]
+    res = [i for i in res if int(year[0]) <= i[2] <= int(year[-1])]
     return [res, year]
+
 
 def getRecord(tags, results):
     if len(tags) == 2:
@@ -110,7 +112,7 @@ def getRecord(tags, results):
             b = 0
             tournament_name = '-'.join(tournament.replace('.', '').split())
             t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
-            while not all(tag.lower() in [player['tag'].lower() for player in players] for tag in tags):
+            while not set(map(str.lower, tags)).issubset([p['tag'].lower() for p in players]):
                 b -= 1
                 sets = smash.bracket_show_sets(t['bracket_ids'][b])
                 players = smash.bracket_show_players(t['bracket_ids'][b])
@@ -121,7 +123,6 @@ def getRecord(tags, results):
         for p in players:
             if p['tag'] in tags:
                 player_ids[tags.index(p['tag'])] = p['entrant_id']
-        
         for s in sets:
             if all(str(n) != 'None' for n in s.values()):
                 ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
@@ -131,8 +132,6 @@ def getRecord(tags, results):
                     p_tag = ''
                     if len(tags) == 1:
                         p_id = ids[not ids.index(player_ids[0])]
-                        #print(ids, player_ids)
-                        
                         for p in players:
                             if p['entrant_id'] == p_id:
                                 p_tag = p['tag']
@@ -147,9 +146,16 @@ def getRecord(tags, results):
                         gamecounts[i] += scores[i]
                     setcounts[scores.index(max(scores))] += 1
                     if len(tags) == 1:
-                        res = [tournament, s['full_round_text'], p_tag, f'{scores[0]} - {scores[1]}', outcome]
+                        res = [tournament,
+                               s['full_round_text'],
+                               p_tag,
+                               f'{scores[0]} - {scores[1]}',
+                               outcome]
                     elif len(tags) == 2:
-                        res = [tournament, s['full_round_text'], f'{scores[0]} - {scores[1]}', tags[player_ids.index(int(s['winner_id']))]]
+                        res = [tournament,
+                               s['full_round_text'],
+                               f'{scores[0]} - {scores[1]}',
+                               tags[player_ids.index(int(s['winner_id']))]]
                     pt_rows.append(res)
     for i in range(len(pt_rows)):
         row = pt_rows[i]
@@ -176,7 +182,7 @@ args = docopt(__doc__)
 if args['--debug']:
     print(args)
 for arg in args:
-    if args[arg] != None:
+    if args[arg] is not None:
         globals()[arg.strip('-')] = args[arg]
 
 for y in year:
@@ -280,7 +286,7 @@ if args['results']:
         if int(threshold) not in [0, 1]:
             output += f'\nTournament names listed for placings of {threshold} or below.\n'
 
-        res = [x for x in res if any(c.isdigit() for c in x[0])]
+        res = [r for r in res if any(c.isdigit() for c in r[0])]
         res = sorted(res, key=lambda x: nums_from_string(x[0]))
 
         # sorted by place
@@ -315,6 +321,7 @@ if args['results']:
                     print(f'{tag} written to {ofile}')
                 else:
                     print(f'{tag} already in {ofile}')
+
 if args['records']:
     record = getRecord(tags, results)
     print('\n\nTournaments where specified players were present but results failed to be retrieved:')
@@ -325,6 +332,7 @@ if args['records']:
     if len(tags) == 2:
         print(f'Total Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}')
         print(f'Total Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
+
 if args['settable']:
     settable = PrettyTable(hrules=ALL)
     settable.field_names = ['↓ vs. →'] + tags
