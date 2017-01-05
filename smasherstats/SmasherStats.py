@@ -106,6 +106,7 @@ def getRecord(tags, results):
     for tournament in tournaments:
         sys.stdout.write('\r')
         sys.stdout.write(f'Retrieving tournament {tournaments.index(tournament)+1}/{len(tournaments)}...')
+        sys.stdout.flush()
         havePlayed = 0
         try:
             players = []
