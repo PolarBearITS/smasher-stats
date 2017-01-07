@@ -23,7 +23,7 @@ Options:
   --debug                   Run in debug mode
 """
 
-from SmasherStats import *
+from smasherstats import *
 from prettytable import PrettyTable, ALL
 
 def nums_from_string(string):
