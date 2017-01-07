@@ -24,6 +24,7 @@ Options:
 """
 
 from SmasherStats import *
+from prettytable import PrettyTable, ALL
 
 def nums_from_string(string):
     nums = ''

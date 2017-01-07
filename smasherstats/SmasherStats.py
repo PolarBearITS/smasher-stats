@@ -2,7 +2,6 @@ import datetime
 import sys
 
 import requests
-from prettytable import PrettyTable, ALL
 from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 import pysmash
