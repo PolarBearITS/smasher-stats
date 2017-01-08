@@ -69,11 +69,11 @@ def getRecord(tags, results):
         sys.stdout.flush()
         havePlayed = 0
 
-        ##TODO: Fix bug where latest bracket in tourney where both players where present is returned,
-        ##      meaning that two players could have played in a previous bracket but still be present
-        ##      in a later bracket (e.g. one in winners and one in losers). To fix, loop through all
-        ##      brackets and if both players are present, check that they actually played. If they
-        ##      played in losers, stop looking, but if they played in winners, keep looking.
+        "TODO: Fix bug where latest bracket in tourney where both players where present is returned, \
+               meaning that two players could have played in a previous bracket but still be present \
+               in a later bracket (e.g. one in winners and one in losers). To fix, loop through all  \
+               brackets and if both players are present, check that they actually played. If they    \
+               played in losers, stop looking, but if they played in winners, keep looking."
 
         try:
             players = []
