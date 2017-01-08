@@ -25,6 +25,7 @@ Options:
 
 from smasherstats import *
 from prettytable import PrettyTable, ALL
+import os.path
 
 def nums_from_string(string):
     nums = ''
@@ -32,6 +33,22 @@ def nums_from_string(string):
         if char.isnumeric():
             nums += char
     return int(nums)
+
+def output_write(output, path):
+    if os.path.isfile(path):
+        with open(path, 'a+', encoding='utf8') as f:
+            ofile = path
+            for c in ['\\', '/']:
+                ofile = ofile.replace(c, ' ')
+            ofile = ofile.split()[-1]
+            if output not in open(path).read():
+                f.write(output + '\n\n')
+                print(f'Output written to {ofile}')
+            else:
+                print(f'Output already in {ofile}')
+    else:
+        print(output)
+
 
 # globals
 smasher = ''
@@ -173,27 +190,22 @@ if args['results']:
                                 t_str = '\n' + t_str
                             t_str += '\n - ' + t_name + ' '
                             if len(year) != 1 and t_year not in t_name:
-                                t_str += f'({t_year})'
+                                t_str += t_year
                 output += t_str
         if i == len(tags) - 1:
-            output += '-'*20 + '\n'
-        if output_file == '':
-            print(output)
-        else:
-            with open(output_file, 'a+') as f:
-                ofile = output_file.replace('\\', ' ').replace('/', ' ').split()[-1]
-                if output not in open(output_file).read():
-                    f.write(output)
-                    print(f'{tag} written to {ofile}')
-                else:
-                    print(f'{tag} already in {ofile}')
+            output += 'asdf'
+            output += '\n' + '-'*20 + '\n'
+        output_write(output, output_file)
 
 if args['records']:
     record = getRecord(tags, results)
-    print('\n\nTournaments where specified players were present but results failed to be retrieved:')
+    output = ''
+    if len(tags) == 2 and output_file != '':
+        output += f'{tags[0]} vs. {tags[1]}'
+    output += '\nTournaments where specified players were present but results failed to be retrieved:'
     for f in record[3]:
-        print(f' - {f}')
-    print()
+      output += f'\n - {f}'
+    output += '\n'
 
     pt = PrettyTable()
     if len(tags) == 1:
@@ -210,22 +222,18 @@ if args['records']:
         elif i > 0:
             pt.add_row(['' for _ in range(len(pt.field_names))])
         pt.add_row([r_name] + row[1:])
-    print(pt)
+    output += pt.get_string()
 
     if len(tags) == 2:
-        print(f'Total Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}')
-        print(f'Total Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}')
+        output += f'\nTotal Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}'
+        output += f'\nTotal Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}'
+
+    output_write(output, output_file)
 
 if args['settable']:
     settable = PrettyTable(hrules=ALL)
     settable.field_names = ['↓ vs. →'] + tags
-    st = [['-' for _ in range(len(tags))] for _ in range(len(tags))]
-    for i in range(len(tags)):
-        for j in range(i+1, len(tags)):
-            record = getRecord([tags[i], tags[j]], results)[1]
-            print('\n')
-            st[i][j] = f'{record[0]} - {record[1]}'
-            st[j][i] = f'{record[1]} - {record[0]}'
+    st = getSetTable(tags, results)
     for i in range(len(st)):
         settable.add_row([tags[i]] + st[i])
-    print(settable)
+    output_write(settable.get_string(), output_file)

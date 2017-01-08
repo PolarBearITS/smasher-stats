@@ -119,3 +119,13 @@ def getRecord(tags, results):
                                tags[player_ids.index(int(s['winner_id']))]]
                     records.append(res)
     return records, setcounts, gamecounts, fail_tournaments
+
+def getSetTable(tags, results):
+    st = [['-' for _ in range(len(tags))] for _ in range(len(tags))]
+    for i in range(len(tags)):
+        for j in range(i+1, len(tags)):
+            record = getRecord([tags[i], tags[j]], results)[1]
+            print('\n')
+            st[i][j] = f'{record[0]} - {record[1]}'
+            st[j][i] = f'{record[1]} - {record[0]}'
+    return st

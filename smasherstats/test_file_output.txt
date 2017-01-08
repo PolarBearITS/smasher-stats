@@ -1,114 +1,68 @@
+﻿+---------+-------+--------+-------+
+| ↓ vs. → | Mang0 | Armada |  Plup |
++---------+-------+--------+-------+
+|  Mang0  |   -   | 7 - 3  | 6 - 0 |
++---------+-------+--------+-------+
+|  Armada | 3 - 7 |   -    | 2 - 0 |
++---------+-------+--------+-------+
+|   Plup  | 0 - 6 | 0 - 2  |   -   |
++---------+-------+--------+-------+
+
 --------------------
-Zain's results for year == 2016:
-Tournament names listed for placings of 1 or below.
+Mang0's Singles results for 2016:
 
-1st - 1
-Smash @ Xanadu Wednesdays 5/25 
-
-4th - 1
-Smash @ Xanadu Wednesdays 6/1 
-
-5th - 1
-Smash @ Xanadu Wednesdays 6/8 
-
-17th - 1
-The Big House 6 
-
-33rd - 1
-Super Smash Con 2016 
-
-49th - 2
-Pound 2016 
-EVO 2016 
---------------------
-chillin's results for year == 2016:
-Tournament names listed for placings of 1 or below.
-
-1st - 1
-Smash @ Xanadu Wednesdays 5/18 
-
-2nd - 1
-Smash @ Xanadu Wednesdays 2/17 
-
-3rd - 1
-Endgame 
-
-4th - 1
-SoCal Colosseum 2 
-
-9th - 1
-Eclipse 2 
-
-13th - 1
-The Big House 6 
-
-17th - 2
-DreamHack Austin 2016 
-EVO 2016 
-
-25th - 3
-Pound 2016 
-CEO 2016 
-Super Smash Con 2016 
-
-33rd - 1
-Shine 2016 
-
-49th - 1
-GENESIS 3 
---------------------
-Armada's results for year == 2016:
-Tournament names listed for placings of 1 or below.
-
-1st - 11
-GENESIS 3 
-B.E.A.S.T 6 
-Michigan Summit 
-SWEET XXIII 
-Smash Summit 2 
-Sentenced to Smash 16 
-Sentenced to Smash 17 
-Heir 3 
-Syndicate 2016 
-Eclipse 2 
-Canada Cup 2016 
-
-2nd - 4
-Kickstart 5 
-WTFox 2 
-EVO 2016 
-The Big House 6 
-
-3rd - 1
-Battle of the Five Gods 
-
-5th - 1
-Get On My Level 2016 
-
-17th (Forfeit) - 1
-Enthusiast Gaming Live Expo 
---------------------
-Mango's results for year == 2016:
-Tournament names listed for placings of 1 or below.
-
-1st - 3
-DreamHack Austin 2016 
-WTFox 2 
-Super Smash Con 2016 
+1st - 4
+ - DreamHack Austin 2016 
+ - WTFox 2 
+ - Super Smash Con 2016 
+ - The Big House 6 
 
 2nd - 7
-GENESIS 3 
-PAX Arena 
-Battle of the Five Gods 
-Pound 2016 
-Enthusiast Gaming Live Expo 
-Get On My Level 2016 
-Low Tier City 4 
+ - GENESIS 3 
+ - PAX Arena 
+ - Battle of the Five Gods 
+ - Pound 2016 
+ - Enthusiast Gaming Live Expo 
+ - Get On My Level 2016 
+ - Low Tier City 4 
 
 3rd - 2
-Clutch City Clash 
-Shine 2016 
+ - Clutch City Clash 
+ - Shine 2016 
 
-4th - 2
-Smash Summit 2 
-EVO 2016 
+4th - 4
+ - Smash Summit 2 
+ - EVO 2016 
+ - Smash Summit 3 
+ - DreamHack Winter 2016 
+
+13th - 1
+ - UGC Smash Open 
+
+
+Mang0 vs. Armada
+Tournaments where specified players were present but results failed to be retrieved:
+ - Enthusiast Gaming Live Expo
+ - EVO 2016
++-------------------------+----------------------+----------------+--------+
+|        Tournament       |        Round         | Mang0 - Armada | Winner |
++-------------------------+----------------------+----------------+--------+
+|        GENESIS 3        |     Grand Final      |     3 - 1      | Mang0  |
+|                         |     Grand Final      |     1 - 3      | Armada |
+|                         |                      |                |        |
+| Battle of the Five Gods |     Losers Final     |     3 - 2      | Mang0  |
+|                         |                      |                |        |
+|      Smash Summit 2     |  Losers Semi-Final   |     0 - 3      | Armada |
+|                         |                      |                |        |
+|   Get On My Level 2016  | Losers Quarter-Final |     3 - 1      | Mang0  |
+|                         |                      |                |        |
+|         WTFox 2         |    Winners Final     |     3 - 1      | Mang0  |
+|                         |     Grand Final      |     3 - 0      | Mang0  |
+|                         |                      |                |        |
+|     The Big House 6     |  Winners Semi-Final  |     3 - 2      | Mang0  |
+|                         |     Grand Final      |     1 - 3      | Armada |
+|                         |     Grand Final      |     3 - 2      | Mang0  |
++-------------------------+----------------------+----------------+--------+
+Total Set Count: Mang0 7 - 3 Armada
+Total Game Count: Mang0 23 - 18 Armada
+
