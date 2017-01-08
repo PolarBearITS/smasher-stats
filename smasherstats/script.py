@@ -217,17 +217,17 @@ if args['records']:
     for i in range(len(pt_rows)):
         row = pt_rows[i]
         r_name = row[0]
-        if r_name == pt_rows[i-1][0]:
-            r_name = ''
-        elif i > 0:
-            pt.add_row(['' for _ in range(len(pt.field_names))])
+        if i > 0:
+            if r_name == pt_rows[i-1][0]:
+                r_name = ''
+            else:
+                pt.add_row(['' for _ in range(len(pt.field_names))])
         pt.add_row([r_name] + row[1:])
     output += pt.get_string()
 
     if len(tags) == 2:
         output += f'\nTotal Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}'
         output += f'\nTotal Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}'
-
     output_write(output, output_file)
 
 if args['settable']:
