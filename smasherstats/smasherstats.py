@@ -1,5 +1,6 @@
 import datetime
 import sys
+import re
 
 import requests
 from docopt import docopt
@@ -48,9 +49,10 @@ def getResults(tag, year, game, event):
     return [res, year]
 
 
-def getRecord(tags, results):
+def getRecord(tags, results, game):
     if len(tags) == 2:
-        print(f'{tags[0]} vs. {tags[1]}')
+        #print(results)
+        print(f'{tags[0]} vs. {tags[1]} in {results[0][1][0][2]}')
     tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
     filter_t = []
     for t in tournaments:
@@ -73,13 +75,15 @@ def getRecord(tags, results):
                meaning that two players could have played in a previous bracket but still be present \
                in a later bracket (e.g. one in winners and one in losers). To fix, loop through all  \
                brackets and if both players are present, check that they actually played. If they    \
-               played in losers, stop looking, but if they played in winners, keep looking."
-
+               played in losers, stop looking, but if they played in winners, keep looking until one \
+               player gets knocked out of the tournament."
+        
         try:
             players = []
             b = 0
-            tournament_name = '-'.join(tournament.replace('.', '').split())
-            t = smash.tournament_show_event_brackets(tournament_name, 'melee-singles')
+            
+            tournament_name = '-'.join(re.sub(r'[^\w\s]','',tournament).split())
+            t = smash.tournament_show_event_brackets(tournament_name, f'{game}-singles')
             while not set(map(str.lower, tags)).issubset([p['tag'].lower() for p in players]):
                 b -= 1
                 sets = smash.bracket_show_sets(t['bracket_ids'][b])

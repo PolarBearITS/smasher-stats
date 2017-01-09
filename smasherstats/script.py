@@ -56,6 +56,8 @@ tags = []
 threshold = 1
 year = [CURRENT_YEAR]
 game = 'Melee'
+results_game = 'Melee'
+record_game = 'melee'
 event = ''
 input_file = ''
 output_file = ''
@@ -85,44 +87,47 @@ games = [
      'SMASH MELEE',
      'SMASH BROS MELEE',
      'Super Smash Bros. Melee',
-     ''],
+     'melee'],
 
     ['64',
      'SMASH 64',
      'SUPER SMASH BROS 64',
      'Super Smash Bros.',
-     ''],
+     'smash-64'],
 
     ['BRAWL',
      'SMASH BROS BRAWL',
      'SMASH BRAWL',
      'Super Smash Bros. Brawl',
-     ''],
+     'brawl'],
 
-    ['SM4SH',
-     'SMASH 4',
+    ['SMASH 4',
+     'SM4SH',
      'SMASH WII U',
      'SMASH BROS 4',
      'SMASH BROS WII U',
      'SMASH BROS 4',
      'SUPER SMASH BROS 4',
      'Super Smash Bros. for Wii U',
-     ''],
+     'wii-u'],
 
     ['PM',
      'PROJECT MELEE',
      'SUPER SMASH BROS PROJECT M',
      'SUPER SMASH BROS PM',
      'Project M',
-     '']
+     'pm']
 ]
 for g in games:
     if game.strip('.').upper() in g:
         game = g[-2]
+        record_game = g[-1]
+        results_game = g[0]
         valid = 1
 if not valid:
     print('Invalid game \'{game}\'. Defaulting to Melee.')
     game = 'Super Smash Bros. Melee'
+    record_game = 'melee'
 
 events = [
     ['SINGLES',
@@ -160,7 +165,7 @@ if args['results']:
         tag = tags[i]
         res = results[i][1]
         output = '-'*20 + '\n'
-        output += f'{tag}\'s {event} results for '
+        output += f'{tag}\'s {results_game.capitalize()} {event} results for '
         if len(year) == 1:
             output += str(year[0])
         elif len(year) == 2:
@@ -198,7 +203,7 @@ if args['results']:
         output_write(output, output_file)
 
 if args['records']:
-    record = getRecord(tags, results)
+    record = getRecord(tags, results, record_game)
     output = ''
     if len(tags) == 2 and output_file != '':
         output += f'{tags[0]} vs. {tags[1]}'
