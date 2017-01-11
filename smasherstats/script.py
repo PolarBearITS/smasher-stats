@@ -198,19 +198,21 @@ if args['results']:
                                 t_str += t_year
                 output += t_str
         if i == len(tags) - 1:
-            output += 'asdf'
             output += '\n' + '-'*20 + '\n'
         output_write(output, output_file)
 
 if args['records']:
     record = getRecord(tags, results, record_game)
     output = ''
+    output += '\n'
     if len(tags) == 2 and output_file != '':
         output += f'{tags[0]} vs. {tags[1]}'
-    output += '\nTournaments where specified players were present but results failed to be retrieved:'
-    for f in record[3]:
-      output += f'\n - {f}'
     output += '\n'
+    if len(record[3]) > 0:
+        output += 'Tournaments where specified players were present but results failed to be retrieved:'
+        for f in record[3]:
+          output += f'\n - {f}'
+        output += '\n'
 
     pt = PrettyTable()
     if len(tags) == 1:
@@ -231,14 +233,22 @@ if args['records']:
     output += pt.get_string()
 
     if len(tags) == 2:
-        output += f'\nTotal Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}'
+        output += f'\n\nTotal Set Count: {tags[0]} {record[1][0]} - {record[1][1]} {tags[1]}'
         output += f'\nTotal Game Count: {tags[0]} {record[2][0]} - {record[2][1]} {tags[1]}'
     output_write(output, output_file)
 
 if args['settable']:
     settable = PrettyTable(hrules=ALL)
     settable.field_names = ['↓ vs. →'] + tags
-    st = getSetTable(tags, results)
-    for i in range(len(st)):
-        settable.add_row([tags[i]] + st[i])
-    output_write(settable.get_string(), output_file)
+    output = ''
+    st = getSetTable(tags, results, record_game)
+    for i in range(len(st[0])):
+        settable.add_row([tags[i]] + st[0][i])
+    output += '\n\n'
+    if len(st[1]) > 0:
+        output += 'Tournaments where specified players were present but results failed to be retrieved:'
+        for f in st[1]:
+          output += f'\n - {f}'
+        output += '\n'
+    output += settable.get_string()
+    output_write(output, output_file)

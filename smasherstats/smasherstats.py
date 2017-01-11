@@ -51,8 +51,7 @@ def getResults(tag, year, game, event):
 
 def getRecord(tags, results, game):
     if len(tags) == 2:
-        #print(results)
-        print(f'{tags[0]} vs. {tags[1]} in {results[0][1][0][2]}')
+        print(f'{tags[0]} vs. {tags[1]}')
     tournaments = [r[1] for res in results for r in res[1] if res[0] in tags]
     filter_t = []
     for t in tournaments:
@@ -65,9 +64,10 @@ def getRecord(tags, results, game):
 
     fail_tournaments = []
     records = []
+    print(tournaments)
     for tournament in tournaments:
-        sys.stdout.write('\r')
         sys.stdout.write(f'Retrieving tournament {tournaments.index(tournament)+1}/{len(tournaments)}...')
+        sys.stdout.write('\r')
         sys.stdout.flush()
         havePlayed = 0
 
@@ -77,20 +77,21 @@ def getRecord(tags, results, game):
                brackets and if both players are present, check that they actually played. If they    \
                played in losers, stop looking, but if they played in winners, keep looking until one \
                player gets knocked out of the tournament."
-        
         try:
-            players = []
-            b = 0
-            
-            tournament_name = '-'.join(re.sub(r'[^\w\s]','',tournament).split())
+            tournament_name = '-'.join(re.sub(r'[^\w\s]','',tournament.replace('\'', ' ')).split())
             t = smash.tournament_show_event_brackets(tournament_name, f'{game}-singles')
-            while not set(map(str.lower, tags)).issubset([p['tag'].lower() for p in players]):
-                b -= 1
-                sets = smash.bracket_show_sets(t['bracket_ids'][b])
-                players = smash.bracket_show_players(t['bracket_ids'][b])
         except:
             fail_tournaments.append(tournament)
             continue
+
+        players = []
+        b = 0
+        brackets = t['bracket_ids']
+        while not set(map(str.lower, tags)).issubset([p['tag'].lower() for p in players]) and abs(b) < len(brackets):
+            b -= 1
+            sets = smash.bracket_show_sets(brackets[b])
+            players = smash.bracket_show_players(brackets[b])
+
         player_ids = ['' for _ in range(len(tags))]
         for p in players:
             if p['tag'] in tags:
@@ -131,12 +132,18 @@ def getRecord(tags, results, game):
                     records.append(res)
     return records, setcounts, gamecounts, fail_tournaments
 
-def getSetTable(tags, results):
+def getSetTable(tags, results, game):
     st = [['-' for _ in range(len(tags))] for _ in range(len(tags))]
+    fail_tournaments = []
     for i in range(len(tags)):
         for j in range(i+1, len(tags)):
-            record = getRecord([tags[i], tags[j]], results)[1]
+            record = getRecord([tags[i], tags[j]], results, game)
+            print(record[3])
+            for f in record[3]:
+                if f not in fail_tournaments:
+                    fail_tournaments.append(f)
+            record = record[1]
             print('\n')
             st[i][j] = f'{record[0]} - {record[1]}'
             st[j][i] = f'{record[1]} - {record[0]}'
-    return st
+    return st, fail_tournaments
