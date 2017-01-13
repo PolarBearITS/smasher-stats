@@ -64,7 +64,7 @@ def getRecord(tags, results, game):
 
     fail_tournaments = []
     records = []
-    print(tournaments)
+    #print(tournaments)
     for tournament in tournaments:
         sys.stdout.write(f'Retrieving tournament {tournaments.index(tournament)+1}/{len(tournaments)}...')
         sys.stdout.write('\r')
