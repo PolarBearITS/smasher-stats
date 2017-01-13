@@ -12,10 +12,10 @@ The default setting is to return a smasher's Melee Singles results for the curre
 ## How to run the program
 
 	Usage:
-		smasherstats.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
-		smasherstats.py records [-s <tag>] [-s <tag>] [-y <year>] [-y <year>] [options]
-		smasherstats.py settable [-s <tag>]... [-y <year>] [-y <year>] [options]
-		smasherstats.py -h | --help
+	    script.py results [-s <tag>]... [-y <year>] [-y <year>] [options]
+	    script.py records [-s <tag>] [-s <tag>] [-y <year>] [-y <year>] [options]
+	    script.py settable [-s <tag>]... [-y <year>] [-y <year>] [options]
+	    script.py -h | --help
 
 	Get tournament results of specified smasher
 
@@ -25,14 +25,13 @@ The default setting is to return a smasher's Melee Singles results for the curre
 	  -i, --input_file <path>   Path to input file where tags are stored
 	  -o, --output_file <path>  Path to output file where results are put
 	  -t, --threshold <place>   Tournaments where the smasher placed worse will have
-								their names displayed
+	                            their names displayed
 	  -y, --year <year>         Specified year used to filter tournament dates
-								List 1 specific year or 2 to define a range
+	                            List 1 specific year or 2 to define a range
 	  -g, --game <game>         Specified game to get tournament results for
-								[default: Melee]
+	                            [default: Melee]
 	  -e, --event <event>       What event to pull results for
-								[default: Singles]
-	  --table                   Output results in a nice table
+	                            [default: Singles]
 	  --debug                   Run in debug mode
 
 ## Dependencies
