@@ -124,47 +124,53 @@ Records pulling off smash.gg
 	+----------------------+-----------------+------------+-------+---------+
 
 &nbsp;
-&nbsp;		
+&nbsp;
 Records pulling off smash.gg for specific player matchups
 
 	>> python script.py records -s Mang0 -s Armada
-	GENESIS 3
-	---------
-	Grand Final - Armada vs. Mang0 1 - 3
-	Grand Final - Mang0 vs. Armada 1 - 3
-
-
-	Battle of the Five Gods
-	-----------------------
-	Losers Final - Armada vs. Mang0 2 - 3
-
-
-	Smash Summit 2
-	--------------
-	Losers Semi-Final - Armada vs. Mang0 3 - 0
-
-
-	Get On My Level 2016
-	--------------------
-	Losers Quarter-Final - Armada vs. Mang0 1 - 3
-
-
-	WTFox 2
-	-------
-	Winners Final - Armada vs. Mang0 1 - 3
-	Grand Final - Mang0 vs. Armada 3 - 0
-
-
-	The Big House 6
-	---------------
-	Winners Semi-Final - Armada vs. Mang0 2 - 3
-	Grand Final - Mang0 vs. Armada 1 - 3
-	Grand Final - Armada vs. Mang0 2 - 3
-
-
 	Tournaments where specified players were present but results failed to be retrieved:
 	 - Enthusiast Gaming Live Expo
 	 - EVO 2016
+	+-------------------------+----------------------+----------------+--------+
+	|        Tournament       |        Round         | Mang0 - Armada | Winner |
+	+-------------------------+----------------------+----------------+--------+
+	|        GENESIS 3        |     Grand Final      |     3 - 1      | Mang0  |
+	|                         |     Grand Final      |     1 - 3      | Armada |
+	|                         |                      |                |        |
+	| Battle of the Five Gods |     Losers Final     |     3 - 2      | Mang0  |
+	|                         |                      |                |        |
+	|      Smash Summit 2     |  Losers Semi-Final   |     0 - 3      | Armada |
+	|                         |                      |                |        |
+	|   Get On My Level 2016  | Losers Quarter-Final |     3 - 1      | Mang0  |
+	|                         |                      |                |        |
+	|         WTFox 2         |    Winners Final     |     3 - 1      | Mang0  |
+	|                         |     Grand Final      |     3 - 0      | Mang0  |
+	|                         |                      |                |        |
+	|     The Big House 6     |  Winners Semi-Final  |     3 - 2      | Mang0  |
+	|                         |     Grand Final      |     1 - 3      | Armada |
+	|                         |     Grand Final      |     3 - 2      | Mang0  |
+	+-------------------------+----------------------+----------------+--------+
 
-	Set Count: Mang0 7 - 3 Armada
-	Game Count: Mang0 23 - 18 Armada
+&nbsp;
+&nbsp;
+Set record table generation for multiple-player matchups
+
+	>> python script.py settable -s Armada -s Hungrybox -s Mang0 -s Mew2King -s Leffen -s PPMD -y 2016
+	Tournaments where specified players were present but results failed to be retrieved:
+	 - Enthusiast Gaming Live Expo
+	 - EVO 2016
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	|  ↓ vs. →  | Armada | Hungrybox | Mang0 | Mew2King | Leffen |  PPMD |
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	|   Armada  |   -    |   10 - 2  | 3 - 7 |  7 - 2   | 2 - 4  | 1 - 0 |
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	| Hungrybox | 2 - 10 |     -     | 9 - 8 |  7 - 3   | 2 - 1  | 0 - 0 |
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	|   Mang0   | 7 - 3  |   8 - 9   |   -   |  2 - 3   | 0 - 2  | 1 - 0 |
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	|  Mew2King | 2 - 7  |   3 - 7   | 3 - 2 |    -     | 2 - 1  | 0 - 0 |
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	|   Leffen  | 4 - 2  |   1 - 2   | 2 - 0 |  1 - 2   |   -    | 0 - 0 |
+	+-----------+--------+-----------+-------+----------+--------+-------+
+	|    PPMD   | 0 - 1  |   0 - 0   | 0 - 1 |  0 - 0   | 0 - 0  |   -   |
+	+-----------+--------+-----------+-------+----------+--------+-------+
