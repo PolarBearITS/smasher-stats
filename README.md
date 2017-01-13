@@ -51,41 +51,35 @@ If you don't have it installed, you can download it here: https://pip.pypa.io/en
 
 Results pulling off ssbwiki
 	
-	>> python smasherstats.py results -s Mang0 -t 3
+	>> python script.py results -s Mang0 -t 3 -y 2016
 	--------------------
-	Mang0's results for 2016:
+	Mang0's Melee Singles results for 2016:
 	Tournament names listed for placings of 3 or below.
 
 	1st - 4
 	2nd - 7
 
 	3rd - 2
-	Clutch City Clash
-	Shine 2016
+	 - Clutch City Clash
+	 - Shine 2016
 
 	4th - 4
-	Smash Summit 2
-	EVO 2016
-	Smash Summit 3
-	DreamHack Winter 2016
+	 - Smash Summit 2
+	 - EVO 2016
+	 - Smash Summit 3
+	 - DreamHack Winter 2016
 
 	13th - 1
-	UGC Smash Open
+	 - UGC Smash Open
 	--------------------
 	
 &nbsp;
 &nbsp;	
 Results pulling off ssbwiki for multiple smashers
 
-	>> python smasherstats.py results -s Armada -s Mang0 -y 2015 -t 0
+	>> python script.py results -s Armada -s Mang0 -y 2015 -t 0
 	--------------------
-	Armada's results for 2015:
-	1st - 16
-	2nd - 4
-	3rd - 2
-	5th - 1
-	--------------------
-	Mang0's results for 2015:
+	Mang0's Melee Singles results for 2015:
 	1st - 5
 	2nd - 4
 	3rd - 2
@@ -93,40 +87,47 @@ Results pulling off ssbwiki for multiple smashers
 	5th - 3
 	17th - 1
 	--------------------
+	Armada's Melee Singles results for 2015:
+	1st - 17
+	2nd - 4
+	3rd - 2
+	5th - 1
+	--------------------
 	
 &nbsp;
 &nbsp;	
 Records pulling off smash.gg
 
-	>> python smasherstats.py records -s Zain
-	Pound 2016
-	----------
-	pools - Zain vs. ASL 2 - 0 WIN
-	pools - Griffith vs. Zain 0 - 2 WIN
-	pools - MattDotZeb vs. Zain 0 - 2 WIN
-	pools - Zain vs. Crush 0 - 2 LOSS
-	Game Count: 6 - 2
-
-	Super Smash Con 2016
-	--------------------
-	pools - Zain vs. Crush 0 - 2 LOSS
-	pools - Zain vs. ftgg 2 - 0 WIN
-	pools - Zain vs. BMC 2 - 0 WIN
-	pools - The Moon vs. Zain 2 - 0 LOSS
-	Game Count: 4 - 4
-
-	The Big House 6
-	---------------
-	Winners Round 1 - Zain vs. KJH 2 - 1 WIN
-	Winners Round 2 - Zain vs. The Moon 0 - 3 LOSS
-	Losers Round 4 - Zain vs. PewPewU 0 - 3 LOSS
-	Game Count: 2 - 7
+	>> python script.py records -s Zain -y 2016
+	Tournaments where specified players were present but results failed to be retrieved:
+	 - Smash @ Xanadu Wednesdays 5/25
+	 - Smash @ Xanadu Wednesdays 6/1
+	 - Smash @ Xanadu Wednesdays 6/8
+	 - EVO 2016
+	 - Smash @ Xanadu Wednesdays 12/28
+	+----------------------+-----------------+------------+-------+---------+
+	|      Tournament      |      Round      | Zain vs. ↓ | Score | Outcome |
+	+----------------------+-----------------+------------+-------+---------+
+	|      Pound 2016      |      pools      |    ASL     | 2 - 0 |   WIN   |
+	|                      |      pools      |  Griffith  | 2 - 0 |   WIN   |
+	|                      |      pools      | MattDotZeb | 2 - 0 |   WIN   |
+	|                      |      pools      |   Crush    | 0 - 2 |   LOSS  |
+	|                      |                 |            |       |         |
+	| Super Smash Con 2016 |      pools      |   Crush    | 0 - 2 |   LOSS  |
+	|                      |      pools      |    ftgg    | 2 - 0 |   WIN   |
+	|                      |      pools      |    BMC     | 2 - 0 |   WIN   |
+	|                      |      pools      |  The Moon  | 0 - 2 |   LOSS  |
+	|                      |                 |            |       |         |
+	|   The Big House 6    | Winners Round 1 |    KJH     | 2 - 1 |   WIN   |
+	|                      | Winners Round 2 |  The Moon  | 0 - 3 |   LOSS  |
+	|                      |  Losers Round 4 |  PewPewU   | 0 - 3 |   LOSS  |
+	+----------------------+-----------------+------------+-------+---------+
 
 &nbsp;
 &nbsp;		
 Records pulling off smash.gg for specific player matchups
 
-	>> python smasherstats.py records -s Mang0 -s Armada
+	>> python script.py records -s Mang0 -s Armada
 	GENESIS 3
 	---------
 	Grand Final - Armada vs. Mang0 1 - 3

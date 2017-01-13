@@ -179,10 +179,10 @@ if args['results']:
 
         # sorted by place
         # formatted like so: [[place, name, year], ...]
-        for i in range(len(res)):
-            r = [i[0] for i in res]
-            place = res[i][0]
-            if res[i - 1][0] != place:
+        for j in range(len(res)):
+            r = [j[0] for j in res]
+            place = res[j][0]
+            if res[j - 1][0] != place:
                 output += '\n'
                 count = r.count(place)
                 t_str = f'{place} - {count}'
@@ -198,7 +198,7 @@ if args['results']:
                                 t_str += t_year
                 output += t_str
         if i == len(tags) - 1:
-            output += '\n' + '-'*20 + '\n'
+            output += '\n' + '-'*20
         output_write(output, output_file)
 
 if args['records']:
