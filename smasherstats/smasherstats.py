@@ -84,52 +84,53 @@ def getRecord(tags, results, game):
             fail_tournaments.append(tournament)
             continue
 
-        players = []
-        b = 0
-        brackets = t['bracket_ids']
-        while not set(map(str.lower, tags)).issubset([p['tag'].lower() for p in players]) and abs(b) < len(brackets):
-            b -= 1
-            sets = smash.bracket_show_sets(brackets[b])
-            players = smash.bracket_show_players(brackets[b])
-
-        player_ids = ['' for _ in range(len(tags))]
-        for p in players:
-            if p['tag'] in tags:
-                player_ids[tags.index(p['tag'])] = p['entrant_id']
-        for s in sets:
-            if all(str(n) != 'None' for n in s.values()):
-                ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
-                scores = [s['entrant_1_score'], s['entrant_2_score']]
-                if all(i in ids for i in player_ids):
-                    havePlayed = 1
-                    p_tag = ''
-                    if len(tags) == 1:
-                        p_id = ids[not ids.index(player_ids[0])]
-                        for p in players:
-                            if p['entrant_id'] == p_id:
-                                p_tag = p['tag']
-                    if ids[0] != player_ids[0]:
-                        ids.reverse()
-                        scores.reverse()
-                    if scores[0] > scores[1]:
-                        outcome = 'WIN'
-                    else:
-                        outcome = 'LOSS'
-                    for i in range(len(gamecounts)):
-                        gamecounts[i] += scores[i]
-                    setcounts[scores.index(max(scores))] += 1
-                    if len(tags) == 1:
-                        res = [tournament,
-                               s['full_round_text'],
-                               p_tag,
-                               f'{scores[0]} - {scores[1]}',
-                               outcome]
-                    elif len(tags) == 2:
-                        res = [tournament,
-                               s['full_round_text'],
-                               f'{scores[0]} - {scores[1]}',
-                               tags[player_ids.index(int(s['winner_id']))]]
-                    records.append(res)
+        havePlayed = 0
+        temp_tags = set(map(str.lower, tags))
+        for bracket in list(reversed(t['bracket_ids'])):
+            if not havePlayed:
+                players = smash.bracket_show_players(bracket)
+                if temp_tags.issubset([p['tag'].lower() for p in players]):
+                    sets = smash.bracket_show_sets(bracket)
+                    player_ids = ['' for _ in range(len(tags))]
+                    for p in players:
+                        if p['tag'] in tags:
+                            player_ids[tags.index(p['tag'])] = p['entrant_id']
+                    for s in sets:
+                        if all(str(n) != 'None' for n in s.values()):
+                            ids = [int(s['entrant_1_id']), int(s['entrant_2_id'])]
+                            scores = [s['entrant_1_score'], s['entrant_2_score']]
+                            if all(i in ids for i in player_ids):
+                                havePlayed = 1
+                                p_tag = ''
+                                if len(tags) == 1:
+                                    p_id = ids[not ids.index(player_ids[0])]
+                                    for p in players:
+                                        if p['entrant_id'] == p_id:
+                                            p_tag = p['tag']
+                                if ids[0] != player_ids[0]:
+                                    ids.reverse()
+                                    scores.reverse()
+                                if scores[0] > scores[1]:
+                                    outcome = 'WIN'
+                                else:
+                                    outcome = 'LOSS'
+                                for i in range(len(gamecounts)):
+                                    gamecounts[i] += scores[i]
+                                setcounts[scores.index(max(scores))] += 1
+                                if len(tags) == 1:
+                                    res = [tournament,
+                                           s['full_round_text'],
+                                           p_tag,
+                                           f'{scores[0]} - {scores[1]}',
+                                           outcome]
+                                elif len(tags) == 2:
+                                    res = [tournament,
+                                           s['full_round_text'],
+                                           f'{scores[0]} - {scores[1]}',
+                                           tags[player_ids.index(int(s['winner_id']))]]
+                                records.append(res)
+            else:
+                break
     return records, setcounts, gamecounts, fail_tournaments
 
 def getSetTable(tags, results, game):
