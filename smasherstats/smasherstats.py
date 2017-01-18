@@ -3,7 +3,6 @@ import sys
 import re
 
 import requests
-from docopt import docopt
 from bs4 import BeautifulSoup as bsoup
 import pysmash
 
@@ -77,12 +76,19 @@ def getRecord(tags, results, game):
                brackets and if both players are present, check that they actually played. If they    \
                played in losers, stop looking, but if they played in winners, keep looking until one \
                player gets knocked out of the tournament."
+
+
+        tournament_name = '-'.join(re.sub(r'[^\w\s]','',tournament.replace('\'', ' ')).split())
         try:
-            tournament_name = '-'.join(re.sub(r'[^\w\s]','',tournament.replace('\'', ' ')).split())
             t = smash.tournament_show_event_brackets(tournament_name, f'{game}-singles')
         except:
             fail_tournaments.append(tournament)
             continue
+
+        # API_STRING=f'https://api.smash.gg/tournament/{tournament_name}/event/{game}-singles?expand[]=groups'
+        # tour = requests.get(API_STRING).json()['entities']['groups']
+        # print(tour)
+        # break
 
         havePlayed = 0
         temp_tags = set(map(str.lower, tags))

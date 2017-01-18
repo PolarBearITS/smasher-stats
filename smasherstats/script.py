@@ -24,6 +24,7 @@ Options:
 """
 
 from smasherstats import *
+from docopt import docopt
 from prettytable import PrettyTable, ALL
 import os.path
 
