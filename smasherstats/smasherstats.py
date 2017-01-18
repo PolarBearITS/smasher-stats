@@ -15,16 +15,16 @@ def getResults(tag, year, game, event):
     smasher = '_'.join(i for i in tag.split())
     request = 'http://www.ssbwiki.com/Smasher:'
     page = requests.get(request + smasher)
-    if page.status_code == 404:
+    if page.status_code != 200:
         page = requests.get(request[:-8] + smasher)  # hehe
     soup = bsoup(page.content, "html.parser")
-    while page.status_code == 404:
+    while page.status_code != 200:
         print(f'Invalid tag \'{smasher}\'. Try again.')
         tag = input('Smasher: ')
         tag = ' '.join(i[0].upper() + i[1:] for i in tag.split())
         smasher = '_'.join(i for i in tag.split())
         page = requests.get(request + smasher)
-        if page.status_code == 404:
+        if page.status_code != 200:
             page = requests.get(request[:-8] + smasher)  # hehe
         soup = bsoup(page.content, "html.parser")
 
@@ -46,7 +46,7 @@ def getResults(tag, year, game, event):
             t_place = str(t.contents[7].text).strip(' ')
         res += [[t_place, t_name, t_year]]
     res = [i for i in res if int(year[0]) <= i[2] <= int(year[-1])]
-    return [res, year]
+    return [res, year, tag]
 
 
 def getRecord(tags, results, game):

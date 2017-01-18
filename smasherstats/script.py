@@ -157,12 +157,12 @@ results = []
 tags = [' '.join(i[0].upper() + i[1:] for i in tag.split()) for tag in tags]
 for tag in tags:
     r = getResults(tag, year, game, event)
-    results.append([tag, r[0]])
+    results.append([r[2], r[0]])
     year = r[1]
 
 if args['results']:
     for i in range(len(tags)):
-        tag = tags[i]
+        tag = results[i][0]
         res = results[i][1]
         output = '-'*20 + '\n'
         output += f'{tag}\'s {results_game.capitalize()} {event} results for '
