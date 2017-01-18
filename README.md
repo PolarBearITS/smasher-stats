@@ -1,4 +1,4 @@
-## smasher-stats
+## smasherstats
 Start of a python smash statistics project
 
 Welcome to SmasherStats. This is super basic for now.
