@@ -36,14 +36,17 @@ def getResults(tag, year, game, event):
         year = [int(tables.contents[3].contents[3].text.split(', ')[1]), CURRENT_YEAR]
 
     for i in range(3, len(tables.contents), 2):
-        t = tables.contents[i]
-        t_name = t.contents[1].text
-        t_year = int((t.contents[3].text).strip(' ')[-4:])
-        if event == 'Singles':
-            t_place = str(t.contents[5].text).strip(' ')
-        elif event == 'Doubles':
-            t_place = str(t.contents[7].text).strip(' ')
-        res += [[t_place, t_name, t_year]]
+        try:
+            t = tables.contents[i]
+            t_name = t.contents[1].text
+            t_year = int((t.contents[3].text).strip(' ')[-4:])
+            if event == 'Singles':
+                t_place = str(t.contents[5].text).strip(' ')
+            elif event == 'Doubles':
+                t_place = str(t.contents[7].text).strip(' ')
+            res += [[t_place, t_name, t_year]]
+        except:
+            continue
     res = [i for i in res if int(year[0]) <= i[2] <= int(year[-1])]
     return [res, year, tag]
 
