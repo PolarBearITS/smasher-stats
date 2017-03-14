@@ -27,6 +27,9 @@ from smasherstats import *
 from docopt import docopt
 from prettytable import PrettyTable, ALL
 import os.path
+import datetime
+
+CURRENT_YEAR = datetime.datetime.now().year
 
 def nums_from_string(string):
     nums = ''
@@ -157,9 +160,10 @@ for tag in smasher:
 results = []
 tags = [' '.join(i[0].upper() + i[1:] for i in tag.split()) for tag in tags]
 for tag in tags:
-    r = getResults(tag, year, game, event)
+    r = smasherstats.getResults(tag, year, game, event)
     results.append([r[2], r[0]])
     year = r[1]
+print(results)
 
 if args['results']:
     for i in range(len(tags)):
@@ -183,7 +187,7 @@ if args['results']:
         for j in range(len(res)):
             r = [j[0] for j in res]
             place = res[j][0]
-            if res[j - 1][0] != place:
+            if res[j - 1][0] != place or j == 0:
                 output += '\n'
                 count = r.count(place)
                 t_str = f'{place} - {count}'
@@ -203,7 +207,7 @@ if args['results']:
         output_write(output, output_file)
 
 if args['records']:
-    record = getRecord(tags, results, record_game)
+    record = smasherstats.getRecord(tags, results, record_game)
     output = ''
     output += '\n'
     if len(tags) == 2 and output_file != '':
